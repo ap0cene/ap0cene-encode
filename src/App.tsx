@@ -1,26 +1,37 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Grommet } from 'grommet'
+import { Subtract, Add } from 'grommet-icons'
+import { hpe } from 'grommet-theme-hpe'
+import { deepMerge } from 'grommet/utils'
+
+const customTheme = {
+  global: {
+    font: {
+      family: 'Roboto',
+      size: '18px',
+      height: '20px',
+    },
+  },
+  accordion: {
+    heading: {
+      margin: { vertical: '20px', horizontal: '24px' },
+    },
+    icons: {
+      collapse: Subtract,
+      expand: Add,
+    },
+    border: undefined,
+  },
+}
+
+const theme = deepMerge(hpe, customTheme)
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <Grommet theme={theme}>
+      <div>app body</div>
+    </Grommet>
+  )
 }
 
-export default App;
+export default App
