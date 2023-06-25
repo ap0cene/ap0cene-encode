@@ -25,7 +25,6 @@
     "react",
     "@typescript-eslint",
     "prettier"
-
   ],
   "rules": {
     "react/react-in-jsx-scope": ["off"],
@@ -43,6 +42,7 @@
     "react/jsx-no-bind": ["off"],
     "react/no-array-index-key": ["off"],
     "import/no-cycle": ["off"],
-    "react/require-default-props": ["off"]
+    "react/require-default-props": ["off"],
+    "import/no-extraneous-dependencies": ["off"]
   }
 }

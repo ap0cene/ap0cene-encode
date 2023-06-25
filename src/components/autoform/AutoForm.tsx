@@ -17,7 +17,6 @@ import {
   isEmptyNestedObject,
   populateCompoundFieldsOnFormSchema,
 } from './utils'
-import CompoundField from './fields/CompoundField'
 import CheckboxGroupField from './fields/CheckboxGroupField'
 import SelectField from './fields/SelectField'
 import CheckboxField from './fields/CheckboxField'
@@ -38,8 +37,7 @@ export const renderFormElements = (
   validators: any,
 ) => {
   const fieldMap = formSchema.map((field: any, i: number) => {
-    const { id, name, help, validate, disabled, placeholder, formContent, hidden, condition, width, fields }: any =
-      field
+    const { id, name, help, validate, disabled, placeholder, formContent, hidden, condition, width }: any = field
 
     const required = evaluateRequiredField(field.required, formState)
 
@@ -254,22 +252,6 @@ export const renderFormElements = (
               setFormState={setFormState}
               width={width}
               errors={errors}
-            />
-          )
-          break
-        case 'compound':
-          return (
-            <CompoundField
-              {...field}
-              required={required}
-              key={id}
-              formState={formState}
-              setFormState={setFormState}
-              readOnlyMode={readOnlyMode}
-              transformFn={transformFn}
-              errors={errors}
-              setFormErrors={setFormErrors}
-              validators={validators}
             />
           )
           break

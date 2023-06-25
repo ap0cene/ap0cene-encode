@@ -1,8 +1,9 @@
-import React from 'react';
+import React from 'react'
 import { Grommet } from 'grommet'
 import { Subtract, Add } from 'grommet-icons'
 import { hpe } from 'grommet-theme-hpe'
 import { deepMerge } from 'grommet/utils'
+import NewProductForm from './components/forms/NewProductForm'
 
 const customTheme = {
   global: {
@@ -29,7 +30,7 @@ const theme = deepMerge(hpe, customTheme)
 function App() {
   return (
     <Grommet theme={theme}>
-      <div>app body</div>
+      <NewProductForm />
     </Grommet>
   )
 }
