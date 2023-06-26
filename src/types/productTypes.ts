@@ -17,11 +17,6 @@ import {
   TopsSubtype,
 } from './productEnums'
 
-
-type Option = {
-  // insert option properties here
-}
-
 export type Product = {
   id: string
   title: string
@@ -56,7 +51,6 @@ export type Product = {
   // shoulder?: number
   // length?: number
   // price: number
-  options: Option[]
 }
 
 export type Variant = {

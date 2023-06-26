@@ -6,6 +6,8 @@ import { DragDropContext, Draggable, DraggableProvided, Droppable } from 'react-
 import styled from 'styled-components'
 import { ReadOnlyBox, ReadOnlyTitle } from '../ViewComponents'
 import AutoFormField from '../AutoFormField'
+import { nftStorageClient } from '../../../lib/nftStorage'
+import { IPFS_GATEWAY } from '../../../constants'
 
 const ImageBox = styled(Box)`
   cursor: pointer;
@@ -178,17 +180,8 @@ function ImagesField({
           const fileList = event?.target?.files
           const uploadURLs = await Promise.all(
             Object.values(fileList).map(async (file: any) => {
-              const fileBuffer = await file.arrayBuffer()
-              const hashBuffer = await crypto.subtle.digest('SHA-1', fileBuffer)
-              const hashArray = Array.from(new Uint8Array(hashBuffer)) // convert buffer to byte array
-              const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('') // convert bytes to hex string
-              const fileExtension = _.last(file.name.split('.'))
-              const fileName = `images/${hashHex}.${fileExtension}`
-              // const upload = await uploadBytes(contractRef, file)
-              // await uploadBytes(contractRef, file)
-              const arweaveTempURL = ''
-              const fileURL = `${arweaveTempURL}${fileName}`
-              // const url = getDownloadURL(upload.ref)
+              const ipfsHash = await nftStorageClient.storeBlob(file)
+              const fileURL = `${IPFS_GATEWAY}${ipfsHash}`
               return fileURL
             }),
           )
@@ -203,36 +196,36 @@ function ImagesField({
           {(provided: any) => (
             <ImagesBox readOnly={readOnlyMode} ref={provided.innerRef} {...provided.droppableProps}>
               {_.values(
-                _.map(formState[id] || [], (fileURL: any, fileURLIndex: number) => {
+                _.map(formState[id] || [], (url: any, fileURLIndex: number) => {
                   return (
-                    <Draggable key={fileURL} draggableId={fileURL} index={fileURLIndex}>
+                    <Draggable key={url} draggableId={url} index={fileURLIndex}>
                       {(draggableProvided: DraggableProvided) => (
                         <div
                           ref={draggableProvided.innerRef}
                           {...draggableProvided.draggableProps}
                           {...draggableProvided.dragHandleProps}
                         >
-                          <Stack key={fileURL} anchor="top-right" margin={{ right: 'small' }}>
+                          <Stack key={url} anchor="top-right" margin={{ right: 'small' }}>
                             <ImageBox
-                              key={fileURL}
+                              key={url}
                               height="xsmall"
                               width="xsmall"
                               round
                               overflow="hidden"
-                              background={{ image: `url(${fileURL})`, size: 'contain' }}
+                              background={{ image: `url(${url})`, size: 'contain' }}
                               border={{ color: 'dark-2' }}
                               onClick={() => {
-                                if (fileURL.includes('pdf')) {
-                                  window.open(fileURL, '_blank')
+                                if (url.includes('pdf')) {
+                                  window.open(url, '_blank')
                                 } else {
                                   setImagePopoverDisplaySettings({
                                     ...imagePopoverDisplaySettings,
-                                    [fileURL]: true,
+                                    [url]: true,
                                   })
                                 }
                               }}
                             >
-                              {imagePopoverDisplaySettings[fileURL as keyof typeof imagePopoverDisplaySettings] &&
+                              {imagePopoverDisplaySettings[url as keyof typeof imagePopoverDisplaySettings] &&
                                 popoverLayers[fileURLIndex]}
                             </ImageBox>
                             <DeleteImageIconBox

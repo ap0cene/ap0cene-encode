@@ -65,10 +65,6 @@ function TextField({
     })
   }
 
-  if (id === 'itemWeight') {
-    console.log({ required })
-  }
-
   return (
     <AutoFormField
       label={name}

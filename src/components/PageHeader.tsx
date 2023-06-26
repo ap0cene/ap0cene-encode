@@ -15,7 +15,7 @@ function PageHeader() {
     <Header border="bottom" pad="medium">
       <LeftHeaderBox direction="row" alignContent="center">
         <HeaderText size="xlarge" textAlign="center">
-          XRPL phygital NFT
+          Ap0cene XRPL phygital NFT
         </HeaderText>
       </LeftHeaderBox>
     </Header>

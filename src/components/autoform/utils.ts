@@ -155,7 +155,12 @@ function cleanObject(obj) {
 
   return Object.fromEntries(
     Object.entries(obj)
-      .filter(([, v]) => v !== undefined)
+      .filter(([, v]) => {
+        if (_.isArray(v)) {
+          return v.length > 0
+        }
+        return v !== undefined
+      })
       .map(([k, v]) => [k, cleanObject(v)]),
   )
 }

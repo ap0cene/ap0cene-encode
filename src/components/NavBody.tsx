@@ -1,7 +1,9 @@
+import { Routes, Route } from 'react-router-dom'
 import { Box } from 'grommet'
 import styled from 'styled-components'
 import React from 'react'
 import NewProductForm from './forms/NewProductForm'
+import NewNFTForm from './forms/NewNFTForm'
 
 const BodyContainer = styled(Box)`
   align-items: center;
@@ -24,7 +26,10 @@ function NavBody() {
     <BodyContainer>
       <BodyBox direction="row">
         <Container margin="large">
-          <NewProductForm />
+          <Routes>
+            <Route path="/" element={<NewProductForm />} />
+            <Route path="/mint/:ipfsHash" element={<NewNFTForm />} />
+          </Routes>
         </Container>
       </BodyBox>
     </BodyContainer>

@@ -305,12 +305,6 @@ export const productFormSchema = [
     ),
   },
   {
-    id: 'hasProductVariants',
-    name: 'This product has Variants',
-    type: 'checkbox',
-    required: false,
-  },
-  {
     formContent: (
       <Box>
         <Text size="xlarge" weight="bold">

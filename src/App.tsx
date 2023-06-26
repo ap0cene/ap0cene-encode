@@ -7,13 +7,13 @@ import PageHeader from './components/PageHeader'
 import NavBody from './components/NavBody'
 
 const customTheme = {
-  global: {
-    font: {
-      family: 'Roboto',
-      size: '18px',
-      height: '20px',
-    },
-  },
+  // global: {
+  //   font: {
+  //     family: 'Roboto',
+  //     size: '18px',
+  //     height: '20px',
+  //   },
+  // },
   accordion: {
     heading: {
       margin: { vertical: '20px', horizontal: '24px' },
