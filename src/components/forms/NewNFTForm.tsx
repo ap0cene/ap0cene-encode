@@ -6,6 +6,7 @@ import styled from 'styled-components'
 import { mintToken } from './nftUtils'
 import AutoForm from '../autoform/AutoForm'
 import { productFormSchema } from './constants'
+import { IPFS_GATEWAY_POSTFIX } from '../../constants'
 
 const CodeBox = styled(Box)`
   white-space: pre;
@@ -23,7 +24,7 @@ function NewNFTForm() {
   // here we use useEffect to fetch the metadata from IPFS
   useEffect(() => {
     const fetchMetadata = async () => {
-      const response = await axios.get(`https://ipfs.io/ipfs/${ipfsHash}`)
+      const response = await axios.get(`https://${ipfsHash}${IPFS_GATEWAY_POSTFIX}`)
       setMetadata(response.data)
     }
     fetchMetadata()

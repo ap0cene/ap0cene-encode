@@ -7,7 +7,7 @@ import styled from 'styled-components'
 import { ReadOnlyBox, ReadOnlyTitle } from '../ViewComponents'
 import AutoFormField from '../AutoFormField'
 import { nftStorageClient } from '../../../lib/nftStorage'
-import { IPFS_GATEWAY } from '../../../constants'
+import { IPFS_GATEWAY_POSTFIX } from '../../../constants'
 
 const ImageBox = styled(Box)`
   cursor: pointer;
@@ -181,7 +181,7 @@ function ImagesField({
           const uploadURLs = await Promise.all(
             Object.values(fileList).map(async (file: any) => {
               const ipfsHash = await nftStorageClient.storeBlob(file)
-              const fileURL = `${IPFS_GATEWAY}${ipfsHash}`
+              const fileURL = `https://${ipfsHash}${IPFS_GATEWAY_POSTFIX}`
               return fileURL
             }),
           )

@@ -176,6 +176,7 @@ const physicalProductFormSchema = [
     type: 'number',
     name: 'Depth',
     condition: (formState: any) => {
+      console.log('type', formState.type)
       return _.includes(['Bags'], formState.type)
     },
     required: (formState: any) => !formState.hasProductVariants,

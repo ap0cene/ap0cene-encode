@@ -6,7 +6,7 @@ It attempts to define a new schema for phygital ecommerce NFTs that can be refer
 
 The main components of the repo are:
 1. The Schema that attempts to map different types of products to NFT metadata
-2. A form library and form components that allow users to upload the metadata to mint NFTs
+2. A form library and form components that allow users to upload the metadata to mint NFTs 
 3. XRPL specific code for minting the NFTs
 
 
