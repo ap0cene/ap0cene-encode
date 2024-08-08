@@ -26,5 +26,7 @@ module.exports = function override(config) {
         test: /node_modules[\\\/]https-proxy-agent[\\\/]/,
         use: "null-loader",
     });
+
+    config.ignoreWarnings = [/Failed to parse source map/]
     return config;
 };

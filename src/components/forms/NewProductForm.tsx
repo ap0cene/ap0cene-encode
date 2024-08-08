@@ -3,7 +3,7 @@ import { Box, Heading } from 'grommet'
 import { useNavigate } from 'react-router-dom'
 import AutoForm from '../autoform/AutoForm'
 import { newProductFormDefaults, productFormSchema } from './constants'
-import { nftStorageClient } from '../../lib/nftStorage'
+import { uploadFileToIPFS } from '../../lib/pinata'
 import { cleanObject } from '../autoform/utils'
 
 function NewProductForm() {
@@ -11,7 +11,8 @@ function NewProductForm() {
   const onSubmit = async (values: any) => {
     const cleanedValues = cleanObject(values)
     const blob = new Blob([JSON.stringify(cleanedValues, null, 2)], { type: 'application/json' })
-    const ipfsHash = await nftStorageClient.storeBlob(blob)
+    const file = new File([blob], 'product.txt', { type: 'text/plain' })
+    const ipfsHash = await uploadFileToIPFS(file)
     navigate(`/mint/${ipfsHash}`)
   }
 

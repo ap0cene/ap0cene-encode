@@ -6,8 +6,7 @@ import { DragDropContext, Draggable, DraggableProvided, Droppable } from 'react-
 import styled from 'styled-components'
 import { ReadOnlyBox, ReadOnlyTitle } from '../ViewComponents'
 import AutoFormField from '../AutoFormField'
-import { nftStorageClient } from '../../../lib/nftStorage'
-import { IPFS_GATEWAY_POSTFIX } from '../../../constants'
+import { makeIPFSURLFromHash, uploadFileToIPFS } from '../../../lib/pinata'
 
 const ImageBox = styled(Box)`
   cursor: pointer;
@@ -180,9 +179,10 @@ function ImagesField({
           const fileList = event?.target?.files
           const uploadURLs = await Promise.all(
             Object.values(fileList).map(async (file: any) => {
-              const ipfsHash = await nftStorageClient.storeBlob(file)
-              const fileURL = `https://${ipfsHash}${IPFS_GATEWAY_POSTFIX}`
-              return fileURL
+              debugger
+              const ipfsHash = await uploadFileToIPFS(file)
+              debugger
+              return makeIPFSURLFromHash(ipfsHash)
             }),
           )
           setFormState({

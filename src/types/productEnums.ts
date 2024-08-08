@@ -124,6 +124,7 @@ export enum AccessoriesSubtype {
   Socks = 'Socks',
   Nails = 'Nails',
   Keychain = 'Keychain',
+  Watch = 'Watch',
 }
 
 export enum ShoesSubtype {

@@ -1,17 +1,21 @@
 import React, { useEffect } from 'react'
 import { Box, Heading, Text, Button } from 'grommet'
+import { execHaloCmdWeb } from '@arx-research/libhalo/api/web'
+
 import { useParams } from 'react-router-dom'
 import axios from 'axios'
 import styled from 'styled-components'
 import { mintToken } from './nftUtils'
 import AutoForm from '../autoform/AutoForm'
 import { productFormSchema } from './constants'
-import { IPFS_GATEWAY_POSTFIX } from '../../constants'
+import { IPFS_GATEWAY_PREFIX } from '../../constants'
 
 const CodeBox = styled(Box)`
   white-space: pre;
   overflow-x: scroll;
 `
+
+console.log(execHaloCmdWeb)
 
 function NewNFTForm() {
   const params = useParams()
@@ -24,7 +28,7 @@ function NewNFTForm() {
   // here we use useEffect to fetch the metadata from IPFS
   useEffect(() => {
     const fetchMetadata = async () => {
-      const response = await axios.get(`https://${ipfsHash}${IPFS_GATEWAY_POSTFIX}`)
+      const response = await axios.get(`${IPFS_GATEWAY_PREFIX}${ipfsHash}`)
       setMetadata(response.data)
     }
     fetchMetadata()
