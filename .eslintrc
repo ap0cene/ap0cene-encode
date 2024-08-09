@@ -43,6 +43,7 @@
     "react/no-array-index-key": ["off"],
     "import/no-cycle": ["off"],
     "react/require-default-props": ["off"],
-    "import/no-extraneous-dependencies": ["off"]
+    "import/no-extraneous-dependencies": ["off"],
+    "@typescript-eslint/no-unused-vars": ["off"]
   }
 }

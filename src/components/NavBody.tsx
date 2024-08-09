@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import React from 'react'
 import NewProductForm from './forms/NewProductForm'
 import NewNFTForm from './forms/NewNFTForm'
+import HomePage from './home/HomePage'
 
 const BodyContainer = styled(Box)`
   align-items: center;
@@ -27,7 +28,8 @@ function NavBody() {
       <BodyBox direction="row">
         <Container margin="large">
           <Routes>
-            <Route path="/" element={<NewProductForm />} />
+            <Route path="/" element={<HomePage />} />
+            <Route path="/product/:address" element={<NewProductForm />} />
             <Route path="/mint/:ipfsHash" element={<NewNFTForm />} />
           </Routes>
         </Container>

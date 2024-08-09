@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { Box, Heading, Text, Button } from 'grommet'
-import { execHaloCmdWeb } from '@arx-research/libhalo/api/web'
-
+// import { execHaloCmdWeb } from '@arx-research/libhalo/api/web'
+// import publicKeyToAddress from 'ethereum-public-key-to-address'
 import { useParams } from 'react-router-dom'
 import axios from 'axios'
 import styled from 'styled-components'
@@ -15,7 +15,8 @@ const CodeBox = styled(Box)`
   overflow-x: scroll;
 `
 
-console.log(execHaloCmdWeb)
+const pk1 =
+  '041C16E8876E67B49178B6E97509D33C02A5A555A39E8BCAE5EDFDC1862243BB4740D0B50105D288714EE1A55DC51CEDA975DF5853B756E277C503735ED2394D12'
 
 function NewNFTForm() {
   const params = useParams()
@@ -40,7 +41,7 @@ function NewNFTForm() {
 
   async function mintXRPLNFT() {
     setMinting(true)
-    const response: any = await mintToken(ipfsHash)
+    const response: any = await mintToken(ipfsHash, pk1)
     setMinting(false)
     setTx(response.tx)
     setNfts(response.nfts)

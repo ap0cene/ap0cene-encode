@@ -5,10 +5,8 @@ function getNet() {
   return 'wss://s.devnet.rippletest.net:51233'
 }
 
-export async function mintToken(ipfsHash: string) {
+export async function mintToken(ipfsHash: string, ethAddress: string) {
   const net = getNet()
-  console.log(xrpl)
-  debugger
   const standbyWallet = xrpl.Wallet.fromSeed(XRPL_DEVNET_SEED)
   const client = new xrpl.Client(net)
   await client.connect()
@@ -19,7 +17,7 @@ export async function mintToken(ipfsHash: string) {
   const transactionJson = {
     TransactionType: 'NFTokenMint',
     Account: standbyWallet.classicAddress,
-    URI: xrpl.convertStringToHex(`ipfs://${ipfsHash}`),
+    URI: xrpl.convertStringToHex(`ipfs://${ipfsHash}:${ethAddress}`),
     Flags: 8,
     TransferFee: 0,
     NFTokenTaxon: 0, // Required, but if you have no use for it, set to zero.

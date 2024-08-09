@@ -4,13 +4,16 @@ import './index.css'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App'
 import reportWebVitals from './reportWebVitals'
+import { GlobalStateProvider } from './state/GlobalStateContext'
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <GlobalStateProvider>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </GlobalStateProvider>
   </React.StrictMode>,
 )
 
