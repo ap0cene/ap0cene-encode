@@ -1,15 +1,18 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Box, Heading, Text, Paragraph, Anchor, Button, Image } from 'grommet'
+import { useNavigate } from 'react-router-dom'
 import { GoogleWallet, Diamond, CloudDownload } from 'grommet-icons'
 import { isInstalled, getAddress } from '@gemwallet/api'
 import styled from 'styled-components'
 import { GlobalStateContext } from '../../state/GlobalStateContext'
 
 import xamanIcon from './xaman.png'
+import { connectToXumm, handleLogOutOfXumm } from '../../utils/xaman'
 
 function WalletConnectBox() {
   const [error, setError] = useState('')
-  const state = useContext(GlobalStateContext)
+  const navigate = useNavigate()
+  const { setAddress, setWalletType, authorities } = useContext(GlobalStateContext)
   const handleGemLogin = async () => {
     setError('')
     const installed = await isInstalled()
@@ -17,18 +20,36 @@ function WalletConnectBox() {
       setError('Please install Gem Wallet to continue')
     } else {
       const { result } = await getAddress()
-      setError(
-        `${result?.address} is not enrolled as an authority in our system. Please email phygital@ap0cene.com to be enrolled.`,
-      )
+      const address = result?.address
+      if (!address) {
+        setError('address not available from gem')
+        return
+      }
+      if (!authorities[address]) {
+        setError(
+          `${result?.address} is not enrolled as an authority in our system. Please email phygital@ap0cene.com to be enrolled.`,
+        )
+        return
+      }
+      setAddress(address)
+      setWalletType('gem')
+      navigate('/product')
     }
-    // Add logic to handle Gem login
-    // Example: setError('Gem login failed');
   }
 
-  const handleXamanLogin = () => {
-    // Add logic to handle Xaman login
-    // Example: setError('Xaman login failed');
-    setError('Xaman Wallet not yet implemented')
+  const handleXamanLogin = async () => {
+    const response = (await connectToXumm()) as any
+    const address = response.me.account
+    if (!authorities[address]) {
+      setError(
+        `${address} is not enrolled as an authority in our system. Please email phygital@ap0cene.com to be enrolled.`,
+      )
+      await handleLogOutOfXumm()
+      return
+    }
+    setAddress(address)
+    setWalletType('xaman')
+    navigate('/product')
   }
 
   const handleWalletConnectLogin = () => {
@@ -80,7 +101,7 @@ function HomePage() {
         <Text size="large">
           {`Before you can begin this process, you will need to have ap0cene Phygital NFT chips on hand to encode, if you have
           not aquired them yet, you can`}{' '}
-          <Anchor href="#" label="Purchase Them Here" />.
+          <Anchor href="https://apocene.co/store" target="_blank" label="Purchase Them Here" />.
         </Text>
 
         <WalletConnectBox />

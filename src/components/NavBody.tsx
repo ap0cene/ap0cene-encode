@@ -29,7 +29,7 @@ function NavBody() {
         <Container margin="large">
           <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route path="/product/:address" element={<NewProductForm />} />
+            <Route path="/product" element={<NewProductForm />} />
             <Route path="/mint/:ipfsHash" element={<NewNFTForm />} />
           </Routes>
         </Container>
