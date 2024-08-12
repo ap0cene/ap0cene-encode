@@ -27,7 +27,7 @@ const productTypesFormSchema = [
     name: 'Product Type',
     type: 'select',
     options: mapEnumToOptions(ProductType),
-    required: true,
+    required: false,
   },
   {
     id: 'topsSubtype',
@@ -35,7 +35,7 @@ const productTypesFormSchema = [
     type: 'checkboxgroup',
     options: mapEnumToOptions(TopsSubtype),
     condition: (formState: any) => formState.type === 'Tops',
-    required: true,
+    required: false,
   },
   {
     id: 'dressesSubtype',
@@ -43,7 +43,7 @@ const productTypesFormSchema = [
     type: 'checkboxgroup',
     options: mapEnumToOptions(DressesSubtype),
     condition: (formState: any) => formState.type === 'Dresses',
-    required: true,
+    required: false,
   },
   {
     id: 'onePiecesSubtype',
@@ -51,7 +51,7 @@ const productTypesFormSchema = [
     type: 'checkboxgroup',
     options: mapEnumToOptions(OnePiecesSubtype),
     condition: (formState: any) => formState.type === 'One-Pieces',
-    required: true,
+    required: false,
   },
   {
     id: 'pantsSubtype',
@@ -59,7 +59,7 @@ const productTypesFormSchema = [
     type: 'checkboxgroup',
     options: mapEnumToOptions(PantsSubtype),
     condition: (formState: any) => formState.type === 'Pants',
-    required: true,
+    required: false,
   },
   {
     id: 'skirtsSubtype',
@@ -67,7 +67,7 @@ const productTypesFormSchema = [
     type: 'checkboxgroup',
     options: mapEnumToOptions(SkirtsSubtype),
     condition: (formState: any) => formState.type === 'Skirts',
-    required: true,
+    required: false,
   },
   {
     id: 'intimatesSwimSubtype',
@@ -75,7 +75,7 @@ const productTypesFormSchema = [
     type: 'checkboxgroup',
     options: mapEnumToOptions(IntimatesSwimSubtype),
     condition: (formState: any) => formState.type === 'Intimates + Swim',
-    required: true,
+    required: false,
   },
   {
     id: 'activewearSubtype',
@@ -83,7 +83,7 @@ const productTypesFormSchema = [
     type: 'checkboxgroup',
     options: mapEnumToOptions(ActivewearSubtype),
     condition: (formState: any) => formState.type === 'Activewear',
-    required: true,
+    required: false,
   },
   {
     id: 'outerwearSubtype',
@@ -91,7 +91,7 @@ const productTypesFormSchema = [
     type: 'checkboxgroup',
     options: mapEnumToOptions(OuterwearSubtype),
     condition: (formState: any) => formState.type === 'Outerwear',
-    required: true,
+    required: false,
   },
   {
     id: 'bagsSubtype',
@@ -99,7 +99,7 @@ const productTypesFormSchema = [
     type: 'checkboxgroup',
     options: mapEnumToOptions(BagsSubtype),
     condition: (formState: any) => formState.type === 'Bags',
-    required: true,
+    required: false,
   },
   {
     id: 'accessoriesSubtype',
@@ -107,7 +107,7 @@ const productTypesFormSchema = [
     type: 'checkboxgroup',
     options: mapEnumToOptions(AccessoriesSubtype),
     condition: (formState: any) => formState.type === 'Accessories',
-    required: true,
+    required: false,
   },
   {
     id: 'shoesSubtype',
@@ -115,7 +115,7 @@ const productTypesFormSchema = [
     type: 'checkboxgroup',
     options: mapEnumToOptions(ShoesSubtype),
     condition: (formState: any) => formState.type === 'Shoes',
-    required: true,
+    required: false,
   },
   {
     id: 'jewlerySubtype',
@@ -123,7 +123,7 @@ const productTypesFormSchema = [
     type: 'checkboxgroup',
     options: mapEnumToOptions(JewelrySubtype),
     condition: (formState: any) => formState.type === 'Jewelry',
-    required: true,
+    required: false,
   },
   {
     id: 'suitSetSubtype',
@@ -151,13 +151,13 @@ const physicalProductFormSchema = [
     id: `color`,
     name: `Color`,
     type: 'select',
-    search: true,
+    search: false,
     options: mapEnumToOptions(Color),
     required: (formState: any) => !formState.hasProductVariants,
   },
   {
     id: `customColor`,
-    name: `Color or Print Name`,
+    name: `Custom Color or Print Name`,
     type: 'text',
     required: false,
     help: (
@@ -278,14 +278,14 @@ export const productFormSchema = [
     name: 'Gender',
     type: 'checkboxgroup',
     options: mapEnumToOptions(Gender),
-    required: true,
+    required: false,
   },
   ...productTypesFormSchema,
   {
     id: 'copy',
     name: 'Product Description',
     type: 'textarea',
-    required: true,
+    required: false,
   },
   {
     formContent: (

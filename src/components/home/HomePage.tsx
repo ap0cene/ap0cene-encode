@@ -7,7 +7,10 @@ import styled from 'styled-components'
 import { GlobalStateContext } from '../../state/GlobalStateContext'
 
 import xamanIcon from './xaman.png'
+import crossmarkIcon from './crossmark.png'
+
 import { connectToXumm, handleLogOutOfXumm } from '../../utils/xaman'
+import { connectToCrossmark } from '../../utils/crossmark'
 
 function WalletConnectBox() {
   const [error, setError] = useState('')
@@ -52,10 +55,17 @@ function WalletConnectBox() {
     navigate('/product')
   }
 
-  const handleWalletConnectLogin = () => {
-    // Add logic to handle Wallet Connect login
-    // Example: setError('Wallet Connect login failed');
-    setError('Wallet Connect not yet implemented')
+  const handleCrossmarkConnection = async () => {
+    const address = (await connectToCrossmark()) as any
+    if (!authorities[address]) {
+      setError(
+        `${address} is not enrolled as an authority in our system. Please email phygital@ap0cene.com to be enrolled.`,
+      )
+      return
+    }
+    setAddress(address)
+    setWalletType('xaman')
+    navigate('/product')
   }
 
   return (
@@ -77,6 +87,13 @@ function WalletConnectBox() {
           onClick={handleXamanLogin}
           icon={<Image src={xamanIcon} alt="Xanum" width="24px" style={{ borderRadius: '5px' }} />}
           label="Xaman"
+          margin={{ bottom: 'small' }}
+          primary
+        />
+        <Button
+          onClick={handleCrossmarkConnection}
+          icon={<Image src={crossmarkIcon} alt="Xanum" width="24px" style={{ borderRadius: '5px' }} />}
+          label="Crossmark"
           margin={{ bottom: 'small' }}
           primary
         />
