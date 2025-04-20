@@ -13,7 +13,7 @@ export const connectToXumm = async () => {
 }
 
 // handle submitting a transaction using Xumm
-export const signTransactionUsingXummWallet = async (domain) => {
+export const signTransactionUsingXummWallet = async (txJSON: Record<string, any>) => {
   const myHeaders = new Headers()
   myHeaders.append('X-API-Secret', XUMM_API_SECRET)
   myHeaders.append('X-API-Key', XUMM_API_KEY)
@@ -30,12 +30,9 @@ export const signTransactionUsingXummWallet = async (domain) => {
       },
     },
     custom_meta: {
-      instruction: 'Thank you for your purchase of the X10 Widget!',
+      instruction: 'Please sign the transaction',
     },
-    txjson: {
-      TransactionType: 'AccountSet',
-      Domain: convertStringToHex(domain),
-    },
+    txjson: txJSON,
   })
 
   const requestOptions = {

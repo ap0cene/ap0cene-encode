@@ -12,14 +12,9 @@ export const connectToCrossmark = async () => {
 }
 
 // handles signing a transaction using crossmark
-export const signTransactionUsingCrossmark = async (domain) => {
-  const address = sdk.methods.getAddress()
-
-  const res = await sdk.methods.signAndWait({
-    TransactionType: 'AccountSet',
-    Domain: convertStringToHex(domain),
-    Account: address,
-  })
-
+// after — generic signer for any XRPL tx
+export const signTransactionUsingCrossmark = async (txJSON: Record<string, any>) => {
+  // txJSON should already have URI hex‑encoded, flags, etc.
+  const res = await sdk.methods.signAndWait(txJSON)
   return res.response.data.txBlob
 }

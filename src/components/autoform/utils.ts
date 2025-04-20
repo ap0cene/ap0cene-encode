@@ -130,8 +130,8 @@ function mapEnumAndLabelsToOptions(enumObject: any, labels: any) {
 }
 
 // Turn enum into array
-function mapEnumToOptions(enumObject) {
-  return Object.values(enumObject)
+function mapEnumToOptions(enumObject: any): string[] {
+  return Object.values(enumObject) as string[]
 }
 
 function populateCompoundFieldsOnFormSchema(formSchema: any) {

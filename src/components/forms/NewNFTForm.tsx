@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { Box, Heading, Text, Button } from 'grommet'
 // import { execHaloCmdWeb } from '@arx-research/libhalo/api/web'
 // import publicKeyToAddress from 'ethereum-public-key-to-address'
@@ -9,6 +9,7 @@ import { mintToken } from './nftUtils'
 import AutoForm from '../autoform/AutoForm'
 import { productFormSchema } from './constants'
 import { IPFS_GATEWAY_PREFIX } from '../../constants'
+import { GlobalStateContext } from '../../state/GlobalStateContext'
 
 const CodeBox = styled(Box)`
   white-space: pre;
@@ -20,6 +21,7 @@ const pk1 =
 
 function NewNFTForm() {
   const params = useParams()
+  const { walletType } = useContext(GlobalStateContext)
   const { ipfsHash } = params as { ipfsHash: string }
   const [metadata, setMetadata] = React.useState()
   const [nfts, setNfts] = React.useState()
@@ -41,7 +43,7 @@ function NewNFTForm() {
 
   async function mintXRPLNFT() {
     setMinting(true)
-    const response: any = await mintToken(ipfsHash, pk1)
+    const response: any = await mintToken(ipfsHash, pk1, walletType)
     setMinting(false)
     setTx(response.tx)
     setNfts(response.nfts)

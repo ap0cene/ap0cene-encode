@@ -176,7 +176,6 @@ const physicalProductFormSchema = [
     type: 'number',
     name: 'Depth',
     condition: (formState: any) => {
-      console.log('type', formState.type)
       return _.includes(['Bags'], formState.type)
     },
     required: (formState: any) => !formState.hasProductVariants,
@@ -196,6 +195,15 @@ const physicalProductFormSchema = [
     name: 'Inseam',
     condition: (formState: any) => {
       return _.includes(['One-Pieces', 'Pants', 'Intimates + Swim', 'Activewear'], formState.type)
+    },
+    required: (formState: any) => !formState.hasProductVariants,
+  },
+  {
+    id: 'waist',
+    type: 'number',
+    name: 'Waist',
+    condition: (formState: any) => {
+      return _.includes(['Pants'], formState.type)
     },
     required: (formState: any) => !formState.hasProductVariants,
   },

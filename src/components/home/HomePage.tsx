@@ -9,8 +9,8 @@ import { GlobalStateContext } from '../../state/GlobalStateContext'
 import xamanIcon from './xaman.png'
 import crossmarkIcon from './crossmark.png'
 
-import { connectToXumm, handleLogOutOfXumm } from '../../utils/xaman'
-import { connectToCrossmark } from '../../utils/crossmark'
+import { connectToXumm, handleLogOutOfXumm } from '../../walletUtils/xaman'
+import { connectToCrossmark } from '../../walletUtils/crossmark'
 
 function WalletConnectBox() {
   const [error, setError] = useState('')
@@ -35,7 +35,7 @@ function WalletConnectBox() {
         return
       }
       setAddress(address)
-      setWalletType('gem')
+      setWalletType('gemwallet')
       navigate('/product')
     }
   }
@@ -64,7 +64,7 @@ function WalletConnectBox() {
       return
     }
     setAddress(address)
-    setWalletType('xaman')
+    setWalletType('crossmark')
     navigate('/product')
   }
 

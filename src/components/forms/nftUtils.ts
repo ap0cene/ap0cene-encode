@@ -1,40 +1,60 @@
 import * as xrpl from 'xrpl'
-import { XRPL_DEVNET_SEED } from '../../constants'
+import { signTransaction, getAccount } from '../../walletUtils'
 
 function getNet() {
-  return 'wss://s.devnet.rippletest.net:51233'
+  return 'wss://xrplcluster.com' // Mainnet endpoint
 }
 
-export async function mintToken(ipfsHash: string, ethAddress: string) {
+export async function mintToken(ipfsHash: string, chipPublicKey: string, walletType: string) {
   const net = getNet()
-  const standbyWallet = xrpl.Wallet.fromSeed(XRPL_DEVNET_SEED)
+  // const standbyWallet = xrpl.Wallet.fromSeed(XRPL_DEVNET_SEED)
   const client = new xrpl.Client(net)
   await client.connect()
+  const account = await getAccount(walletType)
+
+  if (!account) {
+    throw new Error('No account found. Please connect your wallet first.')
+  }
 
   // Note that you must convert the token URL to a hexadecimal
   // value for this transaction.
   // ------------------------------------------------------------------------
+  const tokenUri = `ipfs://${ipfsHash}:${chipPublicKey}`
   const transactionJson = {
     TransactionType: 'NFTokenMint',
-    Account: standbyWallet.classicAddress,
-    URI: xrpl.convertStringToHex(`ipfs://${ipfsHash}:${ethAddress}`),
+    Account: account,
+    URI: Buffer.from(tokenUri, 'utf8').toString('hex'),
     Flags: 8,
     TransferFee: 0,
     NFTokenTaxon: 0, // Required, but if you have no use for it, set to zero.
+    Fee: '10', // Standard fee in drops for mainnet
+    Sequence: 0, // GemWallet will auto-fill this
+    LastLedgerSequence: 0, // GemWallet will auto-fill this
   }
 
-  // ----------------------------------------------------- Submit signed blob
-  // @ts-ignore
-  const tx = await client.submitAndWait(transactionJson, { wallet: standbyWallet })
-  const nfts = await client.request({
-    command: 'account_nfts',
-    account: standbyWallet.classicAddress,
-  })
+  try {
+    const result = await signTransaction(walletType, transactionJson)
 
-  client.disconnect()
+    // Wait for the transaction to be confirmed
+    const tx = await client.request({
+      command: 'tx',
+      transaction: result.hash,
+    })
 
-  return {
-    tx,
-    nfts,
+    // Get the updated NFT list
+    const nfts = await client.request({
+      command: 'account_nfts',
+      account,
+    })
+
+    client.disconnect()
+    return {
+      tx,
+      nfts,
+    }
+  } catch (error) {
+    client.disconnect()
+    console.error('Error minting NFT:', error)
+    throw error
   }
 }

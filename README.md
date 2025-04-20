@@ -1,38 +1,124 @@
-# XRPL phygital NFT frontend
+# Ap0cene Authentication Frontend
 
-This project is a prototype for minting phygital ecommerce NFTs on the XRPL.
+## Overview
 
-It attempts to define a new schema for phygital ecommerce NFTs that can be referenced by NFC chips embedded into physical garments. 
+This is a React-based frontend application for Ap0cene Authentication, built with TypeScript.
 
-The main components of the repo are:
-1. The Schema that attempts to map different types of products to NFT metadata
-2. A form library and form components that allow users to upload the metadata to mint NFTs 
-3. XRPL specific code for minting the NFTs
+## Tech Stack
 
+- React 18.2.0
+- TypeScript 4.4.2
+- Grommet UI Framework 2.25.0
+- XRPL SDK 2.8.1
+- React Router DOM 6.14.0
+- React Hook Form 7.48.2
+- Yup for form validation
 
-## Available Scripts
+## Key Dependencies
 
-In the project directory, you can run:
+- **Wallet Integration**:
+  - @crossmarkio/sdk
+  - @gemwallet/api
+  - xumm
+  - xrpl
+- **UI Components**:
+  - grommet
+  - grommet-icons
+  - grommet-theme-hpe
+  - styled-components
+- **Form Handling**:
+  - react-hook-form
+  - @hookform/resolvers
+  - yup
+- **HTTP Client**:
+  - axios
+- **Development Tools**:
+  - react-app-rewired
+  - eslint
+  - prettier
+  - typescript
 
-### `yarn start`
+## Application Structure
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+```
+src/
+├── components/
+│   ├── autoform/      # Form components
+│   ├── forms/         # Form-related components
+│   ├── home/          # Home page components
+│   ├── NavBody.tsx    # Main navigation component
+│   └── PageHeader.tsx # Page header component
+├── walletUtils/       # Wallet integration utilities
+│   ├── crossmark.ts   # Crossmark wallet integration
+│   ├── gem.ts         # Gem wallet integration
+│   ├── index.ts       # Main wallet utilities
+│   └── xaman.ts       # Xaman wallet integration
+├── types/             # TypeScript type definitions
+├── state/             # State management
+├── lib/               # Utility libraries
+├── App.tsx            # Main application component
+└── index.tsx          # Application entry point
+```
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Key Features
 
-### `yarn test`
+1. **Multi-Wallet Support**:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+   - Integration with Crossmark
+   - Integration with Gem Wallet
+   - Integration with Xaman
+   - XRPL functionality
 
-### `yarn build`
+2. **UI Framework**:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+   - Uses Grommet UI framework
+   - Custom theme based on HPE theme
+   - Responsive design
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+3. **Form Handling**:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+   - Advanced form validation with Yup
+   - React Hook Form integration
+   - Autoform components for dynamic forms
+
+4. **Navigation**:
+   - React Router DOM for routing
+   - Main navigation through NavBody component
+   - Page header with consistent layout
+
+## Development
+
+- Development server runs on port 3001
+- Uses react-app-rewired for configuration
+- Includes ESLint and Prettier for code quality
+- TypeScript for type safety
+
+## Build and Deployment
+
+```bash
+# Start development server
+yarn start
+
+# Build for production
+yarn build
+
+# Deploy to Firebase
+yarn deploy
+```
+
+## Environment
+
+- Node.js environment
+- Browser-based crypto operations
+- Firebase hosting for deployment
+
+## Security Considerations
+
+- Browser-based crypto operations
+- Wallet integration security
+- Form validation and sanitization
+- Secure API communication
+
+## Future Reference
+
+This documentation serves as a quick reference for understanding the application's structure, dependencies, and key features. For detailed implementation, refer to the specific component files and their documentation.

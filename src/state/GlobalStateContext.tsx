@@ -1,4 +1,4 @@
-import React, { createContext, useState, ReactNode, FC, useMemo } from 'react'
+import React, { createContext, useState, ReactNode, FC, useMemo, useEffect } from 'react'
 
 // Define the types for your state
 interface GlobalState {
@@ -9,6 +9,7 @@ interface GlobalState {
   walletType: string
   setAddress: (address: string) => void
   setWalletType: (walletType: string) => void
+  clearState: () => void
 }
 
 const defaultState: GlobalState = {
@@ -17,6 +18,7 @@ const defaultState: GlobalState = {
   walletType: '',
   setAddress: () => {},
   setWalletType: () => {},
+  clearState: () => {},
 }
 
 // Create the context with an initial value of `undefined`
@@ -30,16 +32,71 @@ interface GlobalStateProviderProps {
 
 const authorities = {
   rLF6fKrcs5DPF6mVVa8WzhsTAwLa4fwc8B: 'Ap0cene',
+  rNiewwRCC3MmRXzF8LCQpiiwW8HGZNGgTf: 'Ap0cene 2',
 }
 
 // Create a provider component with the correct type annotation
 export function GlobalStateProvider({ children }: GlobalStateProviderProps) {
-  const [address, setAddress] = useState<string>('')
-  const [walletType, setWalletType] = useState<string>('')
+  // Initialize state with values from localStorage or defaults
+  const [address, setAddressState] = useState<string>(() => {
+    const savedAddress = localStorage.getItem('address')
+    return savedAddress || ''
+  })
+
+  const [walletType, setWalletTypeState] = useState<string>(() => {
+    const savedWalletType = localStorage.getItem('walletType')
+    return savedWalletType || ''
+  })
+
+  // Custom setter that saves to localStorage
+  const setAddress = (addr: string) => {
+    setAddressState(addr)
+    if (addr) {
+      localStorage.setItem('address', addr)
+    } else {
+      localStorage.removeItem('address')
+    }
+  }
+
+  // Custom setter that saves to localStorage
+  const setWalletType = (type: string) => {
+    setWalletTypeState(type)
+    if (type) {
+      localStorage.setItem('walletType', type)
+    } else {
+      localStorage.removeItem('walletType')
+    }
+  }
+
+  // Function to clear all state
+  const clearState = () => {
+    setAddress('') // This also removes from localStorage
+    setWalletType('') // This also removes from localStorage
+  }
+
+  // Effect to validate the saved wallet connection on app start
+  useEffect(() => {
+    // Only attempt to validate if both address and walletType exist
+    const savedAddress = localStorage.getItem('address')
+    const savedWalletType = localStorage.getItem('walletType')
+
+    if (!savedAddress || !savedWalletType) {
+      // If either is missing, clear both to avoid inconsistent state
+      clearState()
+    }
+    // We don't actually verify the wallet here - that happens when the user interacts with wallet features
+  }, [])
 
   const stateValue = useMemo(
-    () => ({ address, setAddress, walletType, setWalletType, authorities }),
-    [address, setAddress, walletType, setWalletType, authorities],
+    () => ({
+      address,
+      setAddress,
+      walletType,
+      setWalletType,
+      clearState,
+      authorities,
+    }),
+    [address, walletType, authorities],
   )
 
   return <GlobalStateContext.Provider value={stateValue}>{children}</GlobalStateContext.Provider>
