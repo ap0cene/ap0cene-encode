@@ -5,7 +5,7 @@ import { Box, Heading, Text, Button } from 'grommet'
 import { useParams } from 'react-router-dom'
 import axios from 'axios'
 import styled from 'styled-components'
-import { mintToken } from './nftUtils'
+import { mintToken } from '../../lib/nftUtils'
 import AutoForm from '../autoform/AutoForm'
 import { productFormSchema } from './constants'
 import { IPFS_GATEWAY_PREFIX } from '../../constants'
@@ -51,6 +51,12 @@ function NewNFTForm() {
   async function mintXRPLNFT() {
     setMinting(true)
     setError(null)
+    // Ensure metadata is defined before proceeding
+    if (!metadata) {
+      setError('Metadata not loaded yet.')
+      setMinting(false)
+      return
+    }
     try {
       const response: any = await mintToken(ipfsHash, pk1, walletType)
       setTx(response.tx)
