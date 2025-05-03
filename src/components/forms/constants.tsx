@@ -270,6 +270,13 @@ const physicalProductFormSchema = [
 ]
 export const productFormSchema = [
   {
+    id: 'chipPublicKey',
+    name: 'Chip Public Key',
+    type: 'text',
+    required: true,
+    disabled: true,
+  },
+  {
     id: 'title',
     name: 'Title',
     type: 'text',

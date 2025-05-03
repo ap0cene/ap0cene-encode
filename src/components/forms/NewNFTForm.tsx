@@ -10,6 +10,8 @@ import AutoForm from '../autoform/AutoForm'
 import { productFormSchema } from './constants'
 import { IPFS_GATEWAY_PREFIX } from '../../constants'
 import { GlobalStateContext } from '../../state/GlobalStateContext'
+import Modal from '../utility/Modal'
+import ErrorBanner from '../utility/ErrorBanner'
 
 const CodeBox = styled(Box)`
   white-space: pre;
@@ -27,12 +29,17 @@ function NewNFTForm() {
   const [nfts, setNfts] = React.useState()
   const [tx, setTx] = React.useState()
   const [minting, setMinting] = React.useState(false)
+  const [error, setError] = React.useState<string | null>(null)
 
   // here we use useEffect to fetch the metadata from IPFS
   useEffect(() => {
     const fetchMetadata = async () => {
-      const response = await axios.get(`${IPFS_GATEWAY_PREFIX}${ipfsHash}`)
-      setMetadata(response.data)
+      try {
+        const response = await axios.get(`${IPFS_GATEWAY_PREFIX}${ipfsHash}`)
+        setMetadata(response.data)
+      } catch (err) {
+        setError('Failed to load metadata from IPFS')
+      }
     }
     fetchMetadata()
   }, [ipfsHash])
@@ -43,10 +50,23 @@ function NewNFTForm() {
 
   async function mintXRPLNFT() {
     setMinting(true)
-    const response: any = await mintToken(ipfsHash, pk1, walletType)
-    setMinting(false)
-    setTx(response.tx)
-    setNfts(response.nfts)
+    setError(null)
+    try {
+      const response: any = await mintToken(ipfsHash, pk1, walletType)
+      setTx(response.tx)
+      setNfts(response.nfts)
+    } catch (err: any) {
+      // Handle user rejection
+      if (err.message?.includes('User rejected')) {
+        setError('Transaction was cancelled by user')
+      } else if (err.message?.includes('not installed')) {
+        setError('Wallet is not installed or not accessible')
+      } else {
+        setError(err.message || 'Failed to mint NFT. Please try again.')
+      }
+    } finally {
+      setMinting(false)
+    }
   }
 
   const nftsBox = nfts && (
@@ -71,7 +91,7 @@ function NewNFTForm() {
     <Box>
       <Heading level={3}>Step 2: Mint NFT on XRPL</Heading>
       <AutoForm readOnlyMode initialValues={metadata} formSchema={productFormSchema} />
-      {/* <Text weight="bold">IPFS Hash {ipfsHash}</Text> */}
+      {error && <ErrorBanner message={error} onClose={() => setError(null)} />}
       <Button
         margin={{ vertical: 'large' }}
         onClick={() => {
@@ -80,7 +100,7 @@ function NewNFTForm() {
         label="Mint NFT on XRPL"
         disabled={minting}
       />
-      {minting && <Text>Minting NFT on XRPL...</Text>}
+      <Modal show={minting} text="Minting NFT on XRPL, please confirm in your wallet" />
       {txBox}
       {nftsBox}
     </Box>

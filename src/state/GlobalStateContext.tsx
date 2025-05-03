@@ -7,8 +7,10 @@ interface GlobalState {
     [key: string]: string
   }
   walletType: string
+  pk1: string
   setAddress: (address: string) => void
   setWalletType: (walletType: string) => void
+  setPk1: (pk1: string) => void
   clearState: () => void
 }
 
@@ -16,8 +18,10 @@ const defaultState: GlobalState = {
   authorities: {},
   address: '',
   walletType: '',
+  pk1: '',
   setAddress: () => {},
   setWalletType: () => {},
+  setPk1: () => {},
   clearState: () => {},
 }
 
@@ -48,6 +52,9 @@ export function GlobalStateProvider({ children }: GlobalStateProviderProps) {
     return savedWalletType || ''
   })
 
+  // Keep pk1 only in memory, not in localStorage
+  const [pk1, setPk1] = useState<string>('')
+
   // Custom setter that saves to localStorage
   const setAddress = (addr: string) => {
     setAddressState(addr)
@@ -72,6 +79,7 @@ export function GlobalStateProvider({ children }: GlobalStateProviderProps) {
   const clearState = () => {
     setAddress('') // This also removes from localStorage
     setWalletType('') // This also removes from localStorage
+    setPk1('') // This only clears from memory
   }
 
   // Effect to validate the saved wallet connection on app start
@@ -93,10 +101,12 @@ export function GlobalStateProvider({ children }: GlobalStateProviderProps) {
       setAddress,
       walletType,
       setWalletType,
+      pk1,
+      setPk1,
       clearState,
       authorities,
     }),
-    [address, walletType, authorities],
+    [address, walletType, pk1, authorities],
   )
 
   return <GlobalStateContext.Provider value={stateValue}>{children}</GlobalStateContext.Provider>

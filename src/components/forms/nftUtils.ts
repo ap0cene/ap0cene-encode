@@ -28,13 +28,15 @@ export async function mintToken(ipfsHash: string, chipPublicKey: string, walletT
     TransferFee: 0,
     NFTokenTaxon: 0, // Required, but if you have no use for it, set to zero.
     Fee: '10', // Standard fee in drops for mainnet
-    Sequence: 0, // GemWallet will auto-fill this
-    LastLedgerSequence: 0, // GemWallet will auto-fill this
+    // Sequence: 0, // GemWallet will auto-fill this
+    // LastLedgerSequence: 0, // GemWallet will auto-fill this
   }
 
   try {
     const result = await signTransaction(walletType, transactionJson)
-
+    if (!result) {
+      throw new Error('Transaction was cancelled by user')
+    }
     // Wait for the transaction to be confirmed
     const tx = await client.request({
       command: 'tx',

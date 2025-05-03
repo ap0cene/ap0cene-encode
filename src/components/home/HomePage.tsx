@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Box, Heading, Text, Paragraph, Anchor, Button, Image } from 'grommet'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { GoogleWallet, Diamond, CloudDownload } from 'grommet-icons'
 import { isInstalled, getAddress } from '@gemwallet/api'
 import styled from 'styled-components'
@@ -111,17 +111,38 @@ function WalletConnectBox() {
 }
 
 function HomePage() {
+  const location = useLocation()
+  const searchParams = new URLSearchParams(location.search)
+  const pk1Param = searchParams.get('pk1')
+  const { setPk1 } = useContext(GlobalStateContext)
+
+  // Save pk1 to global state when it's present in URL
+  useEffect(() => {
+    if (pk1Param) {
+      setPk1(pk1Param)
+    }
+  }, [pk1Param, setPk1])
+
   return (
     <Box>
       <Heading level={3}>Ap0cene Phygital NFT Encoding</Heading>
       <Box>
-        <Text size="large">
-          {`Before you can begin this process, you will need to have ap0cene Phygital NFT chips on hand to encode, if you have
-          not aquired them yet, you can`}{' '}
-          <Anchor href="https://apocene.co/store" target="_blank" label="Purchase Them Here" />.
-        </Text>
-
-        <WalletConnectBox />
+        {pk1Param ? (
+          <>
+            <Text size="large" margin={{ bottom: 'medium' }}>
+              New ap0cene NFC authentication chip detected. To proceed with encoding, please connect your wallet.
+            </Text>
+            <WalletConnectBox />
+          </>
+        ) : (
+          <Box background="light-2" pad="large" round="small" margin={{ top: 'medium' }}>
+            <Text size="large">
+              This page should be opened by scanning an ap0cene NFC authentication chip. Before you can begin this
+              process, you will need to have ap0cene Phygital NFT chips on hand to encode, if you have not acquired them
+              yet, you can <Anchor href="https://apocene.co/store" target="_blank" label="Purchase Them Here" />.
+            </Text>
+          </Box>
+        )}
       </Box>
     </Box>
   )
