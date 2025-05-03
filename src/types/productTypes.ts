@@ -80,3 +80,37 @@ export type Stock = {
   amountAvailable: number
   madeToOrder: boolean
 }
+
+// Represents the structure of the product metadata stored on IPFS
+export type ProductMetadata = {
+  chipPublicKey: string
+  title: string
+  images: string[]
+  gender: Gender[]
+  type: ProductType
+  bagsSubtype?: BagsSubtype[]
+  topsSubtype?: TopsSubtype[]
+  dressesSubtype?: DressesSubtype[]
+  onePiecesSubtype?: OnePiecesSubtype[]
+  pantsSubtype?: PantsSubtype[]
+  skirtsSubtype?: SkirtsSubtype[]
+  intimatesSwimSubtype?: IntimatesSwimSubtype[]
+  activewearSubtype?: ActivewearSubtype[]
+  outerwearSubtype?: OuterwearSubtype[]
+  accessoriesSubtype?: AccessoriesSubtype[]
+  shoesSubtype?: ShoesSubtype[]
+  jewlerySubtype?: JewelrySubtype[]
+  suitSetSubtype?: SuitSetSubtype[]
+  copy?: string
+  itemWeight?: string
+  color?: Color
+  customColor?: string
+  depth?: string
+  width?: string
+  inseam?: string
+  waist?: string
+  sleeve?: string
+  chest?: string
+  shoulder?: string
+  length?: string
+}

@@ -9,8 +9,8 @@ import { GlobalStateContext } from '../../state/GlobalStateContext'
 import xamanIcon from './xaman.png'
 import crossmarkIcon from './crossmark.png'
 
-import { connectToXumm, handleLogOutOfXumm } from '../../walletUtils/xaman'
-import { connectToCrossmark } from '../../walletUtils/crossmark'
+import { connectToXumm, handleLogOutOfXumm } from '../../lib/walletUtils/xaman'
+import { connectToCrossmark } from '../../lib/walletUtils/crossmark'
 
 function WalletConnectBox() {
   const [error, setError] = useState('')

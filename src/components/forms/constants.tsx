@@ -142,9 +142,7 @@ const physicalProductFormSchema = [
     id: `itemWeight`,
     name: `Item Weight`,
     type: 'number',
-    required: (formState: any) => {
-      return !formState.hasProductVariants
-    },
+    required: false,
     help: 'Weight in Lbs',
   },
   {
@@ -153,7 +151,7 @@ const physicalProductFormSchema = [
     type: 'select',
     search: false,
     options: mapEnumToOptions(Color),
-    required: (formState: any) => !formState.hasProductVariants,
+    required: false,
   },
   {
     id: `customColor`,
@@ -178,7 +176,8 @@ const physicalProductFormSchema = [
     condition: (formState: any) => {
       return _.includes(['Bags'], formState.type)
     },
-    required: (formState: any) => !formState.hasProductVariants,
+    required: false,
+    help: 'Depth in inches',
   },
   {
     id: 'width',
@@ -187,7 +186,8 @@ const physicalProductFormSchema = [
     condition: (formState: any) => {
       return _.includes(['Jewelry', 'Bags'], formState.type)
     },
-    required: (formState: any) => !formState.hasProductVariants,
+    required: false,
+    help: 'Width in inches',
   },
   {
     id: 'inseam',
@@ -196,7 +196,8 @@ const physicalProductFormSchema = [
     condition: (formState: any) => {
       return _.includes(['One-Pieces', 'Pants', 'Intimates + Swim', 'Activewear'], formState.type)
     },
-    required: (formState: any) => !formState.hasProductVariants,
+    required: false,
+    help: 'Inseam in inches',
   },
   {
     id: 'waist',
@@ -205,7 +206,8 @@ const physicalProductFormSchema = [
     condition: (formState: any) => {
       return _.includes(['Pants'], formState.type)
     },
-    required: (formState: any) => !formState.hasProductVariants,
+    required: false,
+    help: 'Waist in inches',
   },
   {
     id: 'sleeve',
@@ -217,7 +219,8 @@ const physicalProductFormSchema = [
         formState.type,
       )
     },
-    required: (formState: any) => !formState.hasProductVariants,
+    required: false,
+    help: 'Sleeve in inches',
   },
   {
     id: 'chest',
@@ -229,7 +232,8 @@ const physicalProductFormSchema = [
         formState.type,
       )
     },
-    required: (formState: any) => !formState.hasProductVariants,
+    required: false,
+    help: 'Chest in inches',
   },
   {
     id: 'shoulder',
@@ -238,7 +242,8 @@ const physicalProductFormSchema = [
     condition: (formState: any) => {
       return _.includes(['Tops', 'Dresses', 'One-Pieces', 'Activewear', 'Outerwear'], formState.type)
     },
-    required: (formState: any) => !formState.hasProductVariants,
+    required: false,
+    help: 'Shoulder in inches',
   },
   {
     id: 'length',
@@ -263,9 +268,8 @@ const physicalProductFormSchema = [
         formState.type,
       )
     },
-    required: (formState: any) => {
-      return !formState.hasProductVariants
-    },
+    required: false,
+    help: 'Length in inches',
   },
 ]
 export const productFormSchema = [
@@ -275,6 +279,7 @@ export const productFormSchema = [
     type: 'text',
     required: true,
     disabled: true,
+    readOnlyValueFormatter: (value: string) => _.truncate(value, { length: 40, omission: '...' }),
   },
   {
     id: 'title',

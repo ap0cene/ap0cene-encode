@@ -1,4 +1,4 @@
-import { isInstalled, getAddress, signTransaction } from '@gemwallet/api'
+import { isInstalled, getAddress, signTransaction, submitTransaction } from '@gemwallet/api'
 
 export const getAddressUsingGemWallet = async (): Promise<string | undefined> => {
   try {
@@ -21,6 +21,16 @@ export const getAddressUsingGemWallet = async (): Promise<string | undefined> =>
 export const signTransactionUsingGemWallet = async (transaction: any) => {
   try {
     const { result } = await signTransaction({ transaction })
+    return result
+  } catch (error) {
+    console.error('Error signing transaction with Gem wallet:', error)
+    throw error
+  }
+}
+
+export const submitTransactionUsingGemWallet = async (transaction: any) => {
+  try {
+    const { result } = await submitTransaction({ transaction })
     return result
   } catch (error) {
     console.error('Error signing transaction with Gem wallet:', error)

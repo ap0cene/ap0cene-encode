@@ -4,7 +4,7 @@ import { Diamond } from 'grommet-icons'
 import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
 import { GlobalStateContext } from '../state/GlobalStateContext'
-import { handleLogout } from '../walletUtils'
+import { handleLogout } from '../lib/walletUtils'
 import xamanIcon from './home/xaman.png'
 import crossmarkIcon from './home/crossmark.png'
 
