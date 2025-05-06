@@ -6,8 +6,8 @@ import { isInstalled, getAddress } from '@gemwallet/api'
 import styled from 'styled-components'
 import { GlobalStateContext } from '../../state/GlobalStateContext'
 
-import xamanIcon from './xaman.png'
-import crossmarkIcon from './crossmark.png'
+import xamanIcon from '../../assets/xaman.png'
+import crossmarkIcon from '../../assets/crossmark.png'
 
 import { connectToXumm, handleLogOutOfXumm } from '../../lib/walletUtils/xaman'
 import { connectToCrossmark } from '../../lib/walletUtils/crossmark'
@@ -110,7 +110,7 @@ function WalletConnectBox() {
   )
 }
 
-function HomePage() {
+function Home() {
   const location = useLocation()
   const searchParams = new URLSearchParams(location.search)
   const pk1Param = searchParams.get('pk1')
@@ -148,4 +148,4 @@ function HomePage() {
   )
 }
 
-export default HomePage
+export default Home

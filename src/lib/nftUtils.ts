@@ -90,5 +90,5 @@ export async function mintToken(ipfsHash: string, chipPublicKey: string, walletT
   // }
 
   client.disconnect()
-  return tx.hash
+  return tx
 }
