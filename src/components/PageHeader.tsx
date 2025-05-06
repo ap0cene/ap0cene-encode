@@ -5,8 +5,8 @@ import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
 import { GlobalStateContext } from '../state/GlobalStateContext'
 import { handleLogout } from '../lib/walletUtils'
-import xamanIcon from './home/xaman.png'
-import crossmarkIcon from './home/crossmark.png'
+import xamanIcon from '../assets/xaman.png'
+import crossmarkIcon from '../assets/crossmark.png'
 
 const LeftHeaderBox = styled(Box)`
   align-items: center;

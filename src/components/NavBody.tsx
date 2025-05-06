@@ -4,7 +4,8 @@ import styled from 'styled-components'
 import React from 'react'
 import NewProductForm from './forms/NewProductForm'
 import NewNFTForm from './forms/NewNFTForm'
-import HomePage from './home/HomePage'
+import Home from './pages/Home'
+import Success from './pages/Success'
 
 const BodyContainer = styled(Box)`
   align-items: center;
@@ -28,9 +29,10 @@ function NavBody() {
       <BodyBox direction="row">
         <Container margin="large">
           <Routes>
-            <Route path="/" element={<HomePage />} />
+            <Route path="/" element={<Home />} />
             <Route path="/product" element={<NewProductForm />} />
             <Route path="/mint/:ipfsHash" element={<NewNFTForm />} />
+            <Route path="/success/:txHash" element={<Success />} />
           </Routes>
         </Container>
       </BodyBox>

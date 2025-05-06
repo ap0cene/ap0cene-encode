@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from 'react'
 import { Box, Heading, Text, Button } from 'grommet'
 // import { execHaloCmdWeb } from '@arx-research/libhalo/api/web'
 // import publicKeyToAddress from 'ethereum-public-key-to-address'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import styled from 'styled-components'
 import { mintToken } from '../../lib/nftUtils'
@@ -12,22 +12,20 @@ import { IPFS_GATEWAY_PREFIX } from '../../constants'
 import { GlobalStateContext } from '../../state/GlobalStateContext'
 import Modal from '../utility/Modal'
 import ErrorBanner from '../utility/ErrorBanner'
+import { ProductMetadata } from '../../types/productTypes'
 
 const CodeBox = styled(Box)`
   white-space: pre;
   overflow-x: scroll;
 `
 
-const pk1 =
-  '041C16E8876E67B49178B6E97509D33C02A5A555A39E8BCAE5EDFDC1862243BB4740D0B50105D288714EE1A55DC51CEDA975DF5853B756E277C503735ED2394D12'
-
 function NewNFTForm() {
   const params = useParams()
   const { walletType } = useContext(GlobalStateContext)
   const { ipfsHash } = params as { ipfsHash: string }
-  const [metadata, setMetadata] = React.useState()
-  const [nfts, setNfts] = React.useState()
-  const [tx, setTx] = React.useState()
+  const navigate = useNavigate()
+  const [metadata, setMetadata] = React.useState<ProductMetadata>()
+  const [tx, setTx] = React.useState<any>()
   const [minting, setMinting] = React.useState(false)
   const [error, setError] = React.useState<string | null>(null)
 
@@ -44,6 +42,13 @@ function NewNFTForm() {
     fetchMetadata()
   }, [ipfsHash])
 
+  // Redirect on successful mint
+  useEffect(() => {
+    if (tx && tx.hash) {
+      navigate(`/success/${tx.hash}`)
+    }
+  }, [tx, navigate])
+
   if (!metadata) {
     return <Box>Loading metadata...</Box>
   }
@@ -58,9 +63,8 @@ function NewNFTForm() {
       return
     }
     try {
-      const response: any = await mintToken(ipfsHash, pk1, walletType)
-      setTx(response.tx)
-      setNfts(response.nfts)
+      const txResult: any = await mintToken(ipfsHash, metadata.chipPublicKey, walletType)
+      setTx(txResult)
     } catch (err: any) {
       // Handle user rejection
       if (err.message?.includes('User rejected')) {
@@ -74,15 +78,6 @@ function NewNFTForm() {
       setMinting(false)
     }
   }
-
-  const nftsBox = nfts && (
-    <Box>
-      <Text size="large">NFTs</Text>
-      <CodeBox margin="medium" background="light-1">
-        {JSON.stringify(nfts, null, 2)}
-      </CodeBox>
-    </Box>
-  )
 
   const txBox = tx && (
     <Box>
@@ -108,7 +103,6 @@ function NewNFTForm() {
       />
       <Modal show={minting} text="Minting NFT on XRPL, please confirm in your wallet" />
       {txBox}
-      {nftsBox}
     </Box>
   )
 }
