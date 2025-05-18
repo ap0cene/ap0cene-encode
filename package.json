@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@arx-research/libhalo": "@1.2.2",
+    "@arx-research/libhalo": "^1.11.0",
     "@crossmarkio/sdk": "^0.4.0",
     "@gemwallet/api": "^3.8.0",
     "@hookform/resolvers": "^3.3.2",
