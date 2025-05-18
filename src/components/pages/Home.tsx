@@ -14,6 +14,7 @@ import crossmarkIcon from '../../assets/crossmark.png'
 import { connectToXumm, handleLogOutOfXumm } from '../../lib/walletUtils/xaman'
 import { connectToCrossmark } from '../../lib/walletUtils/crossmark'
 import { lookupAuthenticatedNFT } from '../../lib/nftUtils'
+import NftDisplay from '../NftDisplay'
 
 // Define type for NFT data
 type NFTLookupResult = {
@@ -130,7 +131,6 @@ function Home() {
 
   // Save pk1 to global state when it's present in URL and lookup NFT
   useEffect(() => {
-    console.log('RUNNING THE LOOKUP')
     if (pk1Param) {
       setPk1(pk1Param)
       const lookupNFT = async () => {
@@ -189,14 +189,7 @@ function Home() {
     if (nftData) {
       // NFT found - Display info (Placeholder)
       // TODO: Implement actual display or navigation logic here
-      return (
-        <Box background="light-3" pad="large" round="small" margin={{ top: 'medium' }}>
-          <Heading level={4}>Existing NFT Found</Heading>
-          <Text>Owner: {nftData.owner}</Text>
-          <Text>Metadata Title: {nftData.metadata.title}</Text>
-          {/* Add more details or maybe a link to view the NFT */}
-        </Box>
-      )
+      return <NftDisplay nftData={nftData} />
     }
 
     // NFT not found, proceed with encoding flow
