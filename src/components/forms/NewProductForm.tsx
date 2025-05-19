@@ -10,23 +10,20 @@ import { GlobalStateContext } from '../../state/GlobalStateContext'
 
 function NewProductForm() {
   const navigate = useNavigate()
-  const { pk1 } = useContext(GlobalStateContext)
-
-  if (!pk1) {
+  const { verifiedChipPublicKey } = useContext(GlobalStateContext)
+  console.log('Verified chip public key:', verifiedChipPublicKey)
+  if (!verifiedChipPublicKey) {
     return (
       <Box pad="medium" background="status-error" round="small" direction="row" gap="medium" align="center">
         <Alert size="medium" />
-        <Text>
-          Chip public key not detected. This page has been reached through the wrong route. Please scan a new chip to
-          start again.
-        </Text>
+        <Text>Verified chip public key not found in application state. Please scan a chip first via the homepage.</Text>
       </Box>
     )
   }
 
   const initialValues = {
     ...newProductFormDefaults,
-    chipPublicKey: pk1,
+    chipPublicKey: verifiedChipPublicKey,
   }
 
   const onSubmit = async (values: any) => {

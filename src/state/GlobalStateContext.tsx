@@ -7,10 +7,10 @@ interface GlobalState {
     [key: string]: string
   }
   walletType: string
-  pk1: string
+  verifiedChipPublicKey: string | null
   setAddress: (address: string) => void
   setWalletType: (walletType: string) => void
-  setPk1: (pk1: string) => void
+  setVerifiedChipPublicKey: (key: string | null) => void
   clearState: () => void
 }
 
@@ -18,10 +18,10 @@ const defaultState: GlobalState = {
   authorities: {},
   address: '',
   walletType: '',
-  pk1: '',
+  verifiedChipPublicKey: null,
   setAddress: () => {},
   setWalletType: () => {},
-  setPk1: () => {},
+  setVerifiedChipPublicKey: () => {},
   clearState: () => {},
 }
 
@@ -52,8 +52,7 @@ export function GlobalStateProvider({ children }: GlobalStateProviderProps) {
     return savedWalletType || ''
   })
 
-  // Keep pk1 only in memory, not in localStorage
-  const [pk1, setPk1] = useState<string>('')
+  const [verifiedChipPublicKey, setVerifiedChipPublicKeyState] = useState<string | null>(null)
 
   // Custom setter that saves to localStorage
   const setAddress = (addr: string) => {
@@ -75,11 +74,16 @@ export function GlobalStateProvider({ children }: GlobalStateProviderProps) {
     }
   }
 
+  // Setter for verifiedChipPublicKey (in-memory only)
+  const setVerifiedChipPublicKey = (key: string | null) => {
+    console.log('Setting verified chip public key:', key)
+    setVerifiedChipPublicKeyState(key)
+  }
+
   // Function to clear all state
   const clearState = () => {
     setAddress('') // This also removes from localStorage
     setWalletType('') // This also removes from localStorage
-    setPk1('') // This only clears from memory
   }
 
   // Effect to validate the saved wallet connection on app start
@@ -101,12 +105,12 @@ export function GlobalStateProvider({ children }: GlobalStateProviderProps) {
       setAddress,
       walletType,
       setWalletType,
-      pk1,
-      setPk1,
+      verifiedChipPublicKey,
+      setVerifiedChipPublicKey,
       clearState,
       authorities,
     }),
-    [address, walletType, pk1, authorities],
+    [address, walletType, verifiedChipPublicKey, authorities],
   )
 
   return <GlobalStateContext.Provider value={stateValue}>{children}</GlobalStateContext.Provider>

@@ -85,6 +85,7 @@ export type Stock = {
 export type ProductMetadata = {
   chipPublicKey: string
   title: string
+  brand: string
   images: string[]
   gender: Gender[]
   type: ProductType

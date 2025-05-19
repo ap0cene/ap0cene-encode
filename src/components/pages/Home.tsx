@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Box, Heading, Text, Paragraph, Anchor, Button, Image, Spinner } from 'grommet'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { GoogleWallet, Diamond, CloudDownload } from 'grommet-icons'
+import { GoogleWallet, Diamond, CloudDownload, StatusCritical } from 'grommet-icons'
 import { isInstalled, getAddress } from '@gemwallet/api'
 import styled from 'styled-components'
 import { GlobalStateContext } from '../../state/GlobalStateContext'
@@ -15,6 +15,7 @@ import { connectToXumm, handleLogOutOfXumm } from '../../lib/walletUtils/xaman'
 import { connectToCrossmark } from '../../lib/walletUtils/crossmark'
 import { lookupAuthenticatedNFT } from '../../lib/nftUtils'
 import NftDisplay from '../NftDisplay'
+import { verifyHaloChipSignature, HaloQueryParams } from '../../utils/haloVerification'
 
 // Define type for NFT data
 type NFTLookupResult = {
@@ -123,83 +124,125 @@ function WalletConnectBox() {
 
 function Home() {
   const location = useLocation()
+  const navigate = useNavigate()
   const searchParams = new URLSearchParams(location.search)
-  const pk1Param = searchParams.get('pk1')
-  const { setPk1, authorities } = useContext(GlobalStateContext)
+
+  const pk2Param = searchParams.get('pk2')
+  const rndParam = searchParams.get('rnd')
+  const rndsigParam = searchParams.get('rndsig')
+
+  const { authorities, setVerifiedChipPublicKey, verifiedChipPublicKey } = useContext(GlobalStateContext)
   const [isLoadingNFT, setIsLoadingNFT] = useState(false)
   const [nftData, setNftData] = useState<NFTLookupResult>(null)
+  const [verificationError, setVerificationError] = useState<string | null>(null)
 
-  // Save pk1 to global state when it's present in URL and lookup NFT
   useEffect(() => {
-    if (pk1Param) {
-      setPk1(pk1Param)
-      const lookupNFT = async () => {
-        setIsLoadingNFT(true)
-        setNftData(null) // Reset previous data
-        try {
-          // Extract addresses from the authorities object
-          const knownAccounts = Object.keys(authorities)
-          const result = await lookupAuthenticatedNFT(pk1Param, knownAccounts)
-          setNftData(result)
-          // TODO: Handle case where NFT is found (result is not null)
-          // Maybe redirect to a specific page or display NFT info?
-          if (result) {
-            console.log('Found existing NFT:', result)
-            // Placeholder: Display found NFT info
-          }
-        } catch (error) {
-          console.error('Error looking up NFT:', error)
-          // Handle error state if needed
-        } finally {
-          setIsLoadingNFT(false)
-        }
+    if (pk2Param && rndParam && rndsigParam) {
+      setVerificationError(null)
+      const haloParams: HaloQueryParams = {
+        pk2: pk2Param,
+        rnd: rndParam,
+        rndsig: rndsigParam,
       }
-      lookupNFT()
+      try {
+        const verificationResult = verifyHaloChipSignature(haloParams)
+        const chipKey = verificationResult.publicKey2
+        if (chipKey === pk2Param.toLowerCase()) {
+          setVerifiedChipPublicKey(chipKey)
+        } else {
+          setVerificationError('Key from chip signature does not match key in URL.')
+          setVerifiedChipPublicKey(null)
+        }
+      } catch (error) {
+        console.error('Chip verification failed:', error)
+        setVerificationError('Chip verification failed.')
+        setVerifiedChipPublicKey(null)
+      }
+    }
+  }, [pk2Param, rndParam, rndsigParam])
+
+  useEffect(() => {
+    if (verifiedChipPublicKey) {
+      setIsLoadingNFT(true)
+      setNftData(null)
+
+      try {
+        const lookupNFT = async () => {
+          try {
+            const knownAccounts = Object.keys(authorities)
+            const result = await lookupAuthenticatedNFT(verifiedChipPublicKey, knownAccounts)
+            setNftData(result)
+            if (result) {
+              console.log('Found existing NFT with verified chip key:', result)
+            } else {
+              console.log('No NFT found for verified chip key:', verifiedChipPublicKey)
+            }
+          } catch (error) {
+            console.error('Error looking up NFT:', error)
+            setVerificationError('Error looking up NFT after chip verification.')
+          } finally {
+            setIsLoadingNFT(false)
+          }
+        }
+        lookupNFT()
+      } catch (error: any) {
+        console.log('Error looking up NFT:', error)
+        setIsLoadingNFT(false)
+        setNftData(null)
+      }
     } else {
-      // Reset state if pk1Param is not present
       setIsLoadingNFT(false)
       setNftData(null)
     }
-  }, [pk1Param, setPk1, authorities]) // Added authorities to dependency array
+  }, [verifiedChipPublicKey, authorities])
 
   const renderContent = () => {
-    if (!pk1Param) {
-      // No chip scanned
+    if (isLoadingNFT) {
       return (
-        <Box background="light-2" pad="large" round="small" margin={{ top: 'medium' }}>
-          <Text size="large">
-            This page should be opened by scanning an ap0cene NFC authentication chip. Before you can begin this
-            process, you will need to have ap0cene Phygital NFT chips on hand to encode, if you have not acquired them
-            yet, you can <Anchor href="https://apocene.co/store" target="_blank" label="Purchase Them Here" />.
+        <Box align="center" pad="large">
+          <Spinner size="medium" />
+          <Text margin={{ top: 'small' }}>Verifying chip and looking up NFT...</Text>
+        </Box>
+      )
+    }
+
+    if (verificationError) {
+      return (
+        <Box pad="medium" align="center">
+          <StatusCritical color="status-critical" size="large" />
+          <Text margin={{ top: 'medium' }} color="status-critical">
+            {verificationError}
+          </Text>
+          <Text size="small" margin={{ top: 'small' }}>
+            Please try scanning the chip again.
           </Text>
         </Box>
       )
     }
 
-    if (isLoadingNFT) {
-      // Loading NFT data
-      return (
-        <Box align="center" pad="large">
-          <Spinner size="medium" />
-          <Text margin={{ top: 'small' }}>Looking up existing NFT for this chip...</Text>
-        </Box>
-      )
-    }
-
     if (nftData) {
-      // NFT found - Display info (Placeholder)
-      // TODO: Implement actual display or navigation logic here
       return <NftDisplay nftData={nftData} />
     }
 
-    // NFT not found, proceed with encoding flow
+    if (pk2Param && rndParam && rndsigParam && !verificationError && !isLoadingNFT && !nftData) {
+      return (
+        <>
+          <Text size="large" margin={{ bottom: 'medium' }}>
+            Verified chip. No existing NFT found. To create one, please connect your wallet.
+          </Text>
+          <WalletConnectBox />
+        </>
+      )
+    }
+
     return (
-      <>
-        <Text size="large" margin={{ bottom: 'medium' }}>
-          New ap0cene NFC authentication chip detected. To proceed with encoding, please connect your wallet.
+      <Box background="light-2" pad="large" round="small" margin={{ top: 'medium' }}>
+        <Text size="large">
+          This page should be opened by scanning an ap0cene NFC authentication chip. Before you can begin this process,
+          you will need to have ap0cene Phygital NFT chips on hand to encode, if you have not acquired them yet, you can{' '}
+          <Anchor href="https://ap0cene.co/store" target="_blank" label="Purchase Them Here" />.
         </Text>
-        <WalletConnectBox />
-      </>
+      </Box>
     )
   }
 

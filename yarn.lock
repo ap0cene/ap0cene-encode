@@ -49,7 +49,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@arx-research/libhalo@npm:1.11.0":
+"@arx-research/libhalo@npm:^1.11.0":
   version: 1.11.0
   resolution: "@arx-research/libhalo@npm:1.11.0"
   dependencies:
@@ -16125,7 +16125,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "xrpl-phygital-nft-frontend@workspace:."
   dependencies:
-    "@arx-research/libhalo": "npm:1.11.0"
+    "@arx-research/libhalo": "npm:^1.11.0"
     "@babel/plugin-proposal-private-property-in-object": "npm:^7.21.11"
     "@crossmarkio/sdk": "npm:^0.4.0"
     "@gemwallet/api": "npm:^3.8.0"
@@ -16172,6 +16172,7 @@ __metadata:
     web-vitals: "npm:^2.1.0"
     xrpl: "npm:^2.8.1"
     xumm: "npm:^1.7.7"
+    xumm-oauth2-pkce: "npm:^2.8.7"
     yup: "npm:^1.3.2"
   languageName: unknown
   linkType: soft
@@ -16247,6 +16248,18 @@ __metadata:
     xumm-js-pkce: "npm:^1.0.2"
     xumm-sdk: "npm:^1.11.0"
   checksum: 10c0/bf6853435289c86846df217e6afbb50250bc9ee3d52caea0bcf6ed51d940cd81b5396aa979d468347dc33e18ee8224ddfb291d7143d0b6d2026ffbbb4f4d177f
+  languageName: node
+  linkType: hard
+
+"xumm-oauth2-pkce@npm:^2.8.7":
+  version: 2.8.7
+  resolution: "xumm-oauth2-pkce@npm:2.8.7"
+  dependencies:
+    debug: "npm:^4.1.1"
+    events: "npm:^3.3.0"
+    xumm-js-pkce: "npm:^1.0.2"
+    xumm-sdk: "npm:^1.11.0"
+  checksum: 10c0/e0fdc93b1594fef2e54d69c31c73a5762680cf03ed99126b5fdf328981f55159fd49306282ba5ced134b77663aa81b6aa218b0025c45d37bdbf7d2f0fb46910e
   languageName: node
   linkType: hard
 

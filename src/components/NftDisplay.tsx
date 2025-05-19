@@ -1,12 +1,12 @@
-import React, { useContext } from 'react'
+import React, { useContext, useMemo } from 'react'
 import { Box, Heading, Text, Image, ResponsiveContext, Anchor, Grid, Card, CardHeader, CardBody } from 'grommet'
-import { StatusGood, StatusCritical } from 'grommet-icons'
+import { StatusGood, StatusCritical, StatusUnknown, StatusWarning, StatusInfo } from 'grommet-icons'
 import _ from 'lodash'
 import { XrplNft } from '../types/xrplTypes'
 import { ProductMetadata } from '../types/productTypes'
 import { GlobalStateContext } from '../state/GlobalStateContext'
-import AutoForm from './autoform/AutoForm'
 import { productFormSchema } from './forms/constants'
+import { verifyHaloChipSignature, HaloQueryParams } from '../utils/haloVerification'
 
 // Define type for NFT data based on Home.tsx
 type NFTLookupResult = {
@@ -62,10 +62,87 @@ function getSubtypeInfo(metadata: ProductMetadata): { name: string; value: strin
   return null
 }
 
+interface VerificationSuccess {
+  type: 'verified'
+  chipPublicKeyFromScan: string // pk2 from chip, via URL
+  scanCounter: number
+  matchesMetadata: boolean // Does pk2 from URL match metadata.chipPublicKey?
+}
+
+interface VerificationFailure {
+  type: 'failed'
+  message: string
+}
+
+interface VerificationNotAttempted {
+  type: 'not_attempted' // e.g. missing params or metadata key
+  message: string
+}
+
+type VerificationOutcome = VerificationSuccess | VerificationFailure | VerificationNotAttempted
+
 function NftDisplay({ nftData }: NftDisplayProps) {
   const { nft, metadata } = nftData
   const size = React.useContext(ResponsiveContext)
   const { authorities } = useContext(GlobalStateContext)
+
+  const verificationOutcome = useMemo((): VerificationOutcome => {
+    if (typeof window === 'undefined') {
+      return { type: 'not_attempted', message: 'Verification environment not available.' }
+    }
+    const queryParams = new URLSearchParams(window.location.search)
+    const haloParams: HaloQueryParams = {
+      pk2: queryParams.get('pk2') || undefined,
+      rnd: queryParams.get('rnd') || undefined,
+      rndsig: queryParams.get('rndsig') || undefined,
+    }
+
+    if (!haloParams.pk2 || !haloParams.rnd || !haloParams.rndsig) {
+      return { type: 'not_attempted', message: 'NFC chip data (pk2, rnd, rndsig) not found in URL parameters.' }
+    }
+
+    if (!metadata.chipPublicKey) {
+      return { type: 'not_attempted', message: 'Chip public key not found in product metadata for comparison.' }
+    }
+
+    try {
+      // We still call this to get the scanCounter and to confirm signature validity for these specific params.
+      // The primary chip verification (is this the *right* chip for this NFT?) happened before loading NftDisplay.
+      const verificationResultFromParams = verifyHaloChipSignature(haloParams)
+
+      // Ensure both keys are full keys starting with '04' and compare.
+      // metadata.chipPublicKey should now always be the full key.
+      // haloParams.pk2 is also expected to be the full key.
+      const actualChipKeyFromScan = haloParams.pk2.toLowerCase() // pk2 from URL
+      const expectedChipKeyFromMetadata = metadata.chipPublicKey.toLowerCase()
+
+      // Defensive check: ensure metadata key starts with 04 if we expect it.
+      // However, with the refactor, metadata.chipPublicKey should already be correct.
+      if (!expectedChipKeyFromMetadata.startsWith('04')) {
+        console.warn('metadata.chipPublicKey does not start with 04, comparison might be invalid')
+        // Potentially return a specific error state or attempt to fix, but for now, log and proceed.
+      }
+      if (!actualChipKeyFromScan.startsWith('04')) {
+        // This should not happen if pk2 is a valid uncompressed public key
+        console.warn('pk2 from URL does not start with 04, comparison might be invalid')
+      }
+
+      const matchesMetadata = actualChipKeyFromScan === expectedChipKeyFromMetadata
+
+      return {
+        type: 'verified',
+        chipPublicKeyFromScan: actualChipKeyFromScan, // from pk2 in URL
+        scanCounter: verificationResultFromParams.scanCounter,
+        matchesMetadata,
+      }
+    } catch (error: any) {
+      // This error means rnd/rndsig didn't match pk2 from URL, so chip scan itself is invalid.
+      return {
+        type: 'failed',
+        message: `Chip signature verification failed for URL parameters: ${error.message || 'Unknown error'}`,
+      }
+    }
+  }, [metadata.chipPublicKey]) // Query params are implicitly dependencies via window.location
 
   const isRowLayout = size === 'medium' || size === 'large' || size === 'xlarge' || size === 'xxlarge'
 
@@ -78,6 +155,38 @@ function NftDisplay({ nftData }: NftDisplayProps) {
   const thumbnailImages = metadata.images || []
 
   const subtypeInfo = getSubtypeInfo(metadata)
+
+  let verificationStatusIcon = <StatusUnknown size="xlarge" color="status-unknown" />
+  let verificationStatusText = 'Verification Pending'
+  let verificationStatusColor: string | undefined = 'status-unknown'
+  let verificationDetailedMessage = ''
+
+  if (verificationOutcome.type === 'verified') {
+    if (verificationOutcome.matchesMetadata) {
+      verificationStatusIcon = <StatusGood size="xlarge" color="status-ok" />
+      verificationStatusText = 'Authentic'
+      verificationStatusColor = 'status-ok'
+      verificationDetailedMessage = `Chip signature verified. Scan count: ${verificationOutcome.scanCounter}. Matches expected product chip.`
+    } else {
+      verificationStatusIcon = <StatusWarning size="xlarge" color="status-warning" />
+      verificationStatusText = 'Chip Mismatch'
+      verificationStatusColor = 'status-warning'
+      verificationDetailedMessage = `Chip signature verified, but the chip's public key (${verificationOutcome.chipPublicKeyFromScan.substring(
+        0,
+        12,
+      )}...) does not match the expected product chip key. Scan count: ${verificationOutcome.scanCounter}.`
+    }
+  } else if (verificationOutcome.type === 'failed') {
+    verificationStatusIcon = <StatusCritical size="xlarge" color="status-critical" />
+    verificationStatusText = 'Verification Failed'
+    verificationStatusColor = 'status-critical'
+    verificationDetailedMessage = verificationOutcome.message
+  } else if (verificationOutcome.type === 'not_attempted') {
+    verificationStatusIcon = <StatusInfo size="xlarge" color="status-info" />
+    verificationStatusText = 'Verification Not Performed'
+    verificationStatusColor = 'status-info'
+    verificationDetailedMessage = verificationOutcome.message
+  }
 
   return (
     <Box
@@ -168,7 +277,6 @@ function NftDisplay({ nftData }: NftDisplayProps) {
           </Card>
         )}
 
-        {/* Verification Card - NEW */}
         <Card width="100%" background="light-1" elevation="small" round="small" margin={{ bottom: 'medium' }}>
           <CardHeader pad="medium">
             <Heading level="4" margin="none">
@@ -176,13 +284,15 @@ function NftDisplay({ nftData }: NftDisplayProps) {
             </Heading>
           </CardHeader>
           <CardBody pad="medium" align="center">
-            {/* Placeholder for actual verification logic - assuming 'isVerified' state later */}
             <Box direction="row" align="center" gap="small" margin={{ bottom: 'medium' }}>
-              <StatusGood size="xlarge" color="status-ok" />
-              <Text weight="bold" size="large">
-                This item is authentic.
+              {verificationStatusIcon}
+              <Text weight="bold" size="large" color={verificationStatusColor}>
+                {verificationStatusText}
               </Text>
             </Box>
+            <Text size="small" textAlign="center" margin={{ bottom: 'medium' }}>
+              {verificationDetailedMessage}
+            </Text>
 
             <Box fill="horizontal">
               <Grid columns={{ count: 2, size: 'auto' }} gap="medium">
@@ -200,9 +310,17 @@ function NftDisplay({ nftData }: NftDisplayProps) {
                 </Box>
                 {metadata.chipPublicKey && (
                   <Box gap="xsmall">
-                    <Text weight="bold">{getFieldName('chipPublicKey')}:</Text>
-                    <Text size="small" truncate>
-                      {String(metadata.chipPublicKey)}
+                    <Text weight="bold">Expected Chip Public Key (from IPFS):</Text>
+                    <Text size="small" truncate title={metadata.chipPublicKey}>
+                      {`${metadata.chipPublicKey.substring(0, 34)}...`}
+                    </Text>
+                  </Box>
+                )}
+                {verificationOutcome.type === 'verified' && (
+                  <Box gap="xsmall">
+                    <Text weight="bold">Scanned Chip Public Key (from URL):</Text>
+                    <Text size="small" truncate title={verificationOutcome.chipPublicKeyFromScan}>
+                      {`${verificationOutcome.chipPublicKeyFromScan.substring(0, 34)}...`}
                     </Text>
                   </Box>
                 )}
@@ -237,14 +355,12 @@ function NftDisplay({ nftData }: NftDisplayProps) {
                   <Text>{String(metadata.color)}</Text>
                 </Box>
               )}
-              {!metadata.itemWeight &&
-                productFormSchema.find((f) => f.id === 'itemWeight') &&
-                metadata.itemWeight !== undefined && (
-                  <Box gap="xsmall">
-                    <Text weight="bold">{getFieldName('itemWeight')}:</Text>
-                    <Text>{metadata.itemWeight} kg</Text>
-                  </Box>
-                )}
+              {metadata.itemWeight !== undefined && productFormSchema.find((f) => f.id === 'itemWeight') && (
+                <Box gap="xsmall">
+                  <Text weight="bold">{getFieldName('itemWeight')}:</Text>
+                  <Text>{metadata.itemWeight} kg</Text>
+                </Box>
+              )}
             </Grid>
           </CardBody>
         </Card>
