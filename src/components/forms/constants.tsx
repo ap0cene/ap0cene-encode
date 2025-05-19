@@ -288,6 +288,12 @@ export const productFormSchema = [
     required: true,
   },
   {
+    id: 'brand',
+    name: 'Brand',
+    type: 'text',
+    required: true,
+  },
+  {
     id: 'images',
     name: 'Product Images',
     type: 'images',
@@ -320,7 +326,6 @@ export const productFormSchema = [
             <li> Styling tips</li>
             <li> A good pun!</li>
           </ul>
-          <i>We reserve the right to edit or clarify any product descriptions to fit our site formatting</i>
         </Text>
       </Box>
     ),
@@ -346,6 +351,7 @@ export const productFormSchema = [
 
 export const newProductFormDefaults = {
   title: '',
+  brand: '',
   images: [],
   gender: [],
   type: '',
