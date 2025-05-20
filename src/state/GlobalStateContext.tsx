@@ -36,7 +36,6 @@ interface GlobalStateProviderProps {
 
 const authorities = {
   rLF6fKrcs5DPF6mVVa8WzhsTAwLa4fwc8B: 'Ap0cene',
-  rNiewwRCC3MmRXzF8LCQpiiwW8HGZNGgTf: 'Ap0cene 2',
 }
 
 // Create a provider component with the correct type annotation

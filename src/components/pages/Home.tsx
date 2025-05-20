@@ -190,13 +190,11 @@ function Home() {
         setIsLoadingNFT(false)
         setNftData(null)
       }
-    } else {
-      setIsLoadingNFT(false)
-      setNftData(null)
     }
   }, [verifiedChipPublicKey, authorities])
 
   const renderContent = () => {
+    console.log('isLoadingNFT', isLoadingNFT)
     if (isLoadingNFT) {
       return (
         <Box align="center" pad="large">

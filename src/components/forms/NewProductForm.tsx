@@ -11,7 +11,6 @@ import { GlobalStateContext } from '../../state/GlobalStateContext'
 function NewProductForm() {
   const navigate = useNavigate()
   const { verifiedChipPublicKey } = useContext(GlobalStateContext)
-  console.log('Verified chip public key:', verifiedChipPublicKey)
   if (!verifiedChipPublicKey) {
     return (
       <Box pad="medium" background="status-error" round="small" direction="row" gap="medium" align="center">

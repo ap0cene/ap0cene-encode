@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from 'react'
+import React, { useContext, useMemo, useState } from 'react'
 import { Box, Heading, Text, Image, ResponsiveContext, Anchor, Grid, Card, CardHeader, CardBody } from 'grommet'
 import { StatusGood, StatusCritical, StatusUnknown, StatusWarning, StatusInfo } from 'grommet-icons'
 import _ from 'lodash'
@@ -86,6 +86,10 @@ function NftDisplay({ nftData }: NftDisplayProps) {
   const size = React.useContext(ResponsiveContext)
   const { authorities } = useContext(GlobalStateContext)
 
+  const initialMainImageSrc =
+    metadata.images && metadata.images.length > 0 ? metadata.images[0] : 'https://via.placeholder.com/600'
+  const [currentMainImageSrc, setCurrentMainImageSrc] = useState(initialMainImageSrc)
+
   const verificationOutcome = useMemo((): VerificationOutcome => {
     if (typeof window === 'undefined') {
       return { type: 'not_attempted', message: 'Verification environment not available.' }
@@ -150,8 +154,6 @@ function NftDisplay({ nftData }: NftDisplayProps) {
   const issuerName = authorities[issuerAddress] || issuerAddress
   const issuerExplorerUrl = `https://bithomp.com/explorer/${issuerAddress}`
 
-  const mainImageSrc =
-    metadata.images && metadata.images.length > 0 ? metadata.images[0] : 'https://via.placeholder.com/600'
   const thumbnailImages = metadata.images || []
 
   const subtypeInfo = getSubtypeInfo(metadata)
@@ -208,7 +210,7 @@ function NftDisplay({ nftData }: NftDisplayProps) {
         >
           <Image
             fit="contain"
-            src={mainImageSrc}
+            src={currentMainImageSrc}
             alt={metadata.title || 'NFT Image'}
             style={{ borderRadius: 'xsmall', maxWidth: '100%', maxHeight: '100%' }}
           />
@@ -225,7 +227,14 @@ function NftDisplay({ nftData }: NftDisplayProps) {
         </Box>
         <Box direction="row" gap="small" wrap justify="center" style={{ marginTop: '10px' }}>
           {thumbnailImages.map((src, index) => (
-            <Box key={`thumb-${index}`} border={{ color: 'border', size: 'small' }} round="xsmall" overflow="hidden">
+            <Box
+              key={`thumb-${index}`}
+              border={{ color: 'border', size: 'small' }}
+              round="xsmall"
+              overflow="hidden"
+              onClick={() => setCurrentMainImageSrc(src)}
+              style={{ cursor: 'pointer' }}
+            >
               <Image
                 src={src}
                 alt={`thumbnail ${index + 1}`}
