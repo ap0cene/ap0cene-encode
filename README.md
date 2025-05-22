@@ -8,35 +8,35 @@ This is a React-based frontend application for Ap0cene Authentication, built wit
 
 ```mermaid
 flowchart TD
-    subgraph NFC Scan and Initial Verification
-        Direction LR
-        Scan[NFC Chip Scanned via Mobile App/Device] --> URLParams[URL Parameters (pk2, rnd, rndsig)]
-        URLParams --> InitialSigVer[Verify Chip Signature (rndsig against pk2 & rnd)]
-        InitialSigVer --> ChipPK[Validated Chip Public Key (pk2_from_scan)]
+    subgraph "NFC Scan and Initial Verification"
+        direction LR
+        Scan["NFC Chip Scanned via Mobile App/Device"] --> URLParams["URL Parameters (pk2, rnd, rndsig)"]
+        URLParams --> InitialSigVer["Verify Chip Signature (rndsig against pk2 & rnd)"]
+        InitialSigVer --> ChipPK["Validated Chip Public Key (pk2_from_scan)"]
     end
 
-    subgraph XRPL NFT Lookup
-        Direction LR
-        ChipPK --> GenTaxon[Generate NFTokenTaxon from pk2_from_scan]
-        GenTaxon --> SearchAccounts{Loop through Known XRPL Accounts}
-        SearchAccounts -- For Each Account --> RPC[Query Account NFTs by Taxon via RPC (nfts_by_issuer)]
-        RPC --> NFTList[List of Potential NFTs]
+    subgraph "XRPL NFT Lookup"
+        direction LR
+        ChipPK --> GenTaxon["Generate NFTokenTaxon from pk2_from_scan"]
+        GenTaxon --> SearchAccounts{"Loop through Known XRPL Accounts"}
+        SearchAccounts -- "For Each Account" --> RPC["Query Account NFTs by Taxon via RPC (nfts_by_issuer)"]
+        RPC --> NFTList["List of Potential NFTs"]
     end
 
-    subgraph NFT Validation and Metadata Fetch
-        Direction LR
-        NFTList --> FilterLoop{For Each NFT in List}
-        FilterLoop --> DecodeURI[Decode NFT URI (Hex to UTF8)]
-        DecodeURI --> ExtractData[Extract ipfsHash_from_URI & pk2_from_URI]
-        ExtractData --> VerifyMatch{Compare pk2_from_scan with pk2_from_URI}
-        VerifyMatch -- Match --> MatchedNFT[Authenticated NFT Found]
-        VerifyMatch -- No Match --> FilterLoop
-        MatchedNFT --> IPFSHash[Use ipfsHash_from_URI]
-        IPFSHash --> IPFSGateway[Load Metadata from IPFS Gateway]
-        IPFSGateway --> ProductMetadata[Product Metadata Object]
+    subgraph "NFT Validation and Metadata Fetch"
+        direction LR
+        NFTList --> FilterLoop{"For Each NFT in List"}
+        FilterLoop --> DecodeURI["Decode NFT URI (Hex to UTF8)"]
+        DecodeURI --> ExtractData["Extract ipfsHash_from_URI & pk2_from_URI"]
+        ExtractData --> VerifyMatch{"Compare pk2_from_scan with pk2_from_URI"}
+        VerifyMatch -- "Match" --> MatchedNFT["Authenticated NFT Found"]
+        VerifyMatch -- "No Match" --> FilterLoop
+        MatchedNFT --> IPFSHash["Use ipfsHash_from_URI"]
+        IPFSHash --> IPFSGateway["Load Metadata from IPFS Gateway"]
+        IPFSGateway --> ProductMetadata["Product Metadata Object"]
     end
 
-    ProductMetadata --> UI[Display Product Info & Verification Status]
+    ProductMetadata --> UI["Display Product Info & Verification Status"]
 
     %% Styling (Optional - can be removed if too verbose for README)
     classDef scan fill:#f9f,stroke:#333,stroke-width:2px;
