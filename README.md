@@ -8,46 +8,54 @@ This is a React-based frontend application for Ap0cene Authentication, built wit
 
 ```mermaid
 flowchart TD
-    subgraph "NFC Scan and Initial Verification"
-        direction LR
-        Scan["NFC Chip Scanned via Mobile App/Device"] --> URLParams["URL Parameters (pk2, rnd, rndsig)"]
-        URLParams --> InitialSigVer["Verify Chip Signature (rndsig against pk2 & rnd)"]
-        InitialSigVer --> ChipPK["Validated Chip Public Key (pk2_from_scan)"]
+    Start["User Scans NFC Chip"] --> VerifyChip["Verify Chip Signature<br/>(pk2, rnd, rndsig)"]
+    VerifyChip --> ChipValid{Chip Valid?}
+
+    ChipValid -- No --> Error["Display Error"]
+    ChipValid -- Yes --> ComputeTaxon["Generate NFTokenTaxon<br/>from Public Key Hash"]
+
+    ComputeTaxon --> SearchNFT["Search NFTs Across<br/>Authority Accounts"]
+    SearchNFT --> NFTExists{NFT Registered?}
+
+    %% YES PATH - Verification Flow
+    NFTExists -- Yes --> ExtractURI
+
+    subgraph consumer["Consumer Experience"]
+        ExtractURI["Extract IPFS Hash<br/>from NFT URI"]
+        ExtractURI --> LoadIPFS["Load Product Metadata<br/>from IPFS"]
+        LoadIPFS --> VerifyMatch["Compare Chip Public Key<br/>with IPFS Metadata"]
+        VerifyMatch --> DisplayProduct["Display Product Info<br/>& Verification Status"]
     end
 
-    subgraph "XRPL NFT Lookup"
-        direction LR
-        ChipPK --> GenTaxon["Generate NFTokenTaxon from pk2_from_scan"]
-        GenTaxon --> SearchAccounts{"Loop through Known XRPL Accounts"}
-        SearchAccounts -- "For Each Account" --> RPC["Query Account NFTs by Taxon via RPC (nfts_by_issuer)"]
-        RPC --> NFTList["List of Potential NFTs"]
-    end
+    %% NO PATH - Registration Flow
+    NFTExists -- No --> ShowWallets["Show Wallet Options<br/>(Gem, Xaman, Crossmark)"]
+    ShowWallets --> ConnectWallet["User Connects Wallet"]
+    ConnectWallet --> CheckAuth{Wallet Address<br/>Authorized?}
 
-    subgraph "NFT Validation and Metadata Fetch"
-        direction LR
-        NFTList --> FilterLoop{"For Each NFT in List"}
-        FilterLoop --> DecodeURI["Decode NFT URI (Hex to UTF8)"]
-        DecodeURI --> ExtractData["Extract ipfsHash_from_URI & pk2_from_URI"]
-        ExtractData --> VerifyMatch{"Compare pk2_from_scan with pk2_from_URI"}
-        VerifyMatch -- "Match" --> MatchedNFT["Authenticated NFT Found"]
-        VerifyMatch -- "No Match" --> FilterLoop
-        MatchedNFT --> IPFSHash["Use ipfsHash_from_URI"]
-        IPFSHash --> IPFSGateway["Load Metadata from IPFS Gateway"]
-        IPFSGateway --> ProductMetadata["Product Metadata Object"]
-    end
+    CheckAuth -- No --> AuthError["Display Authorization Error<br/>'Contact phygital@ap0cene.com'"]
+    CheckAuth -- Yes --> FillMetadata["Fill Product Metadata Form<br/>(includes chip public key)"]
 
-    ProductMetadata --> UI["Display Product Info & Verification Status"]
+    FillMetadata --> UploadIPFS["Upload Metadata to IPFS<br/>via Pinata"]
+    UploadIPFS --> CreateURI["Generate NFT URI:<br/>ipfs://[hash]:[chipPublicKey]"]
+    CreateURI --> MintNFT["Mint NFT on XRPL<br/>with Taxon & URI"]
+    MintNFT --> Success["Display Success<br/>Transaction Hash"]
 
-    %% Styling (Optional - can be removed if too verbose for README)
-    classDef scan fill:#f9f,stroke:#333,stroke-width:2px;
-    classDef xrpl fill:#ccf,stroke:#333,stroke-width:2px;
-    classDef validation fill:#cfc,stroke:#333,stroke-width:2px;
-    classDef display fill:#ffc,stroke:#333,stroke-width:2px;
+    %% Styling
+    classDef scan fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
+    classDef decision fill:#fff3e0,stroke:#e65100,stroke-width:2px;
+    classDef verification fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px;
+    classDef registration fill:#f3e5f5,stroke:#4a148c,stroke-width:2px;
+    classDef error fill:#ffebee,stroke:#b71c1c,stroke-width:2px;
+    classDef success fill:#e0f2f1,stroke:#004d40,stroke-width:2px;
 
-    class Scan,URLParams,InitialSigVer,ChipPK scan;
-    class GenTaxon,SearchAccounts,RPC,NFTList xrpl;
-    class FilterLoop,DecodeURI,ExtractData,VerifyMatch,MatchedNFT,IPFSHash,IPFSGateway,ProductMetadata validation;
-    class UI display;
+    style consumer fill:#f0f9ff,stroke:#0369a1,stroke-width:3px,rx:10,ry:10
+
+    class Start,VerifyChip,ComputeTaxon,SearchNFT scan;
+    class ChipValid,NFTExists,CheckAuth decision;
+    class ExtractURI,LoadIPFS,VerifyMatch,DisplayProduct verification;
+    class ShowWallets,ConnectWallet,FillMetadata,UploadIPFS,CreateURI,MintNFT registration;
+    class Error,AuthError error;
+    class Success success;
 ```
 
 ## Tech Stack
