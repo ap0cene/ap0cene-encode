@@ -1,5 +1,6 @@
 import * as xrpl from 'xrpl'
 import axios from 'axios'
+import shajs from 'sha.js'
 
 import { signTransaction, getAccount } from './walletUtils'
 import { ProductMetadata } from '../types/productTypes'
@@ -15,9 +16,11 @@ export function pkToTaxon(pkHex: string): number {
     throw new Error('pkToTaxon expects a hex string ≥ 8 chars')
   }
 
+  const hashedKey = shajs('sha256').update(pkHex).digest('hex')
+
   // Grab the last 8 hex chars → parse as base-16
   // eslint-disable-next-line no-bitwise
-  return parseInt(pkHex.slice(-8), 16) >>> 0 // ">>> 0" forces Uint32
+  return parseInt(hashedKey.slice(-8), 16) >>> 0 // ">>> 0" forces Uint32
 }
 
 export async function mintToken(ipfsHash: string, chipPublicKey: string, walletType: string) {
@@ -56,6 +59,7 @@ export async function mintToken(ipfsHash: string, chipPublicKey: string, walletT
   let result
   try {
     result = await signTransaction(walletType, transactionJson)
+    debugger
     if (!result) {
       throw new Error('Transaction was cancelled by user')
     }
@@ -64,7 +68,7 @@ export async function mintToken(ipfsHash: string, chipPublicKey: string, walletT
     console.error('Error signing NFT transaction:', error)
     throw error
   }
-
+  debugger
   let tx
   try {
     // Wait for the transaction to be confirmed
@@ -77,9 +81,9 @@ export async function mintToken(ipfsHash: string, chipPublicKey: string, walletT
     console.error('Error confirming NFT transaction:', error)
     throw error
   }
-
+  debugger
   client.disconnect()
-  return tx
+  return tx.result
 }
 
 /**

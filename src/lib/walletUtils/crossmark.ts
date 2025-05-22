@@ -15,6 +15,15 @@ export const connectToCrossmark = async () => {
 // after — generic signer for any XRPL tx
 export const signTransactionUsingCrossmark = async (txJSON: Record<string, any>) => {
   // txJSON should already have URI hex‑encoded, flags, etc.
-  const res = await sdk.methods.signAndWait(txJSON)
-  return res.response.data.txBlob
+  const res = await sdk.methods.signAndSubmitAndWait(txJSON)
+  debugger
+  // According to Crossmark SDK examples, the hash is found at res.response.data.resp.result.hash
+  const { data } = res.response
+
+  if (data && data.resp && data.resp.result && typeof data.resp.result.hash === 'string') {
+    return { hash: data.resp.result.hash }
+  }
+
+  console.error('Transaction hash not found in expected path (data.resp.result.hash) in Crossmark response:', data)
+  throw new Error('Transaction hash not found in Crossmark response after signAndSubmitAndWait')
 }

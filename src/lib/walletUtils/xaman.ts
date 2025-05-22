@@ -19,6 +19,8 @@ export const signTransactionUsingXummWallet = async (txJSON: Record<string, any>
     throw new Error('No SDK instance found')
   }
 
+  const returnUrl = `${window.location.origin}/success/{txid}`
+
   // Create the sign request AND subscribe to events in one go
   const { created, resolved } = await sdk.payload.createAndSubscribe(
     {
@@ -26,35 +28,64 @@ export const signTransactionUsingXummWallet = async (txJSON: Record<string, any>
       options: {
         submit: true, // auto-submit after signing
         expire: 300, // 5 min
-        return_url: { web: window.location.origin },
+        return_url: {
+          app: returnUrl, // identical app + web  → only the opener redirects
+          web: returnUrl,
+        },
       },
       custom_meta: { instruction: 'Please sign the transaction' },
     },
-    (ev) => {
-      // handle streaming events (optional, keeps UI in sync)
-      if ('opened' in ev.data) console.log('User opened the sign request')
-      if ('signed' in ev.data) {
-        if (ev.data.signed) {
-          // returning anything ≈ resolve the websocket & stop listening
-          return { hash: ev.data.txid }
+    (eventDetails): { hash: string } | undefined => {
+      console.log('eventDetails', eventDetails)
+      // handle streaming events
+      // `eventDetails.data` contains the event specific data
+      if ('opened' in eventDetails.data) {
+        console.log('User opened the sign request (QR shown or Xumm app opened)')
+        // Do not return a value here, to keep listening for further events
+        return undefined
+      }
+
+      if ('signed' in eventDetails.data) {
+        if (eventDetails.data.signed) {
+          // Transaction signed successfully
+          console.log('Transaction signed, txid:', eventDetails.data.txid)
+          // Returning the hash object will resolve the `resolved` promise with this value
+          return { hash: eventDetails.data.txid }
         }
+        // Transaction rejected by the user
+        console.error('Transaction rejected by user in Xumm.')
+        // Throwing an error will reject the `resolved` promise
         throw new Error('Transaction rejected by user in Xumm.')
       }
-      if ('expires_in_seconds' in ev.data && ev.data.expires_in_seconds <= 0) {
+
+      if ('expires_in_seconds' in eventDetails.data && eventDetails.data.expires_in_seconds <= 0) {
+        // Sign request expired
+        console.error('Xumm signing request expired.')
+        // Throwing an error will reject the `resolved` promise
         throw new Error('Xumm signing request expired.')
       }
-      return false // keep listening
+
+      // For any other event type, or if no specific action taken, return undefined to keep listening.
+      return undefined
     },
   )
 
   // Show the QR / deep-link (opens Xumm on desktop & mobile)
-  window.open(created.next.always, '_blank')
-
-  // Wait until the callback above resolves or throws
-  // `resolved` carries whatever the callback returned
-  return resolved as Promise<{ hash: string }>
+  window.location.assign(created.next.always)
+  // window.location.assign(created.next.always)
+  // The `resolved` promise will be of type `unknown` if not explicitly typed by the SDK based on the callback.
+  // We expect `{ hash: string }` upon successful resolution.
+  const result = (await resolved) as { hash: string }
+  // Wait until the callback above resolves (with hash) or throws an error.
+  return result // result is now cast to { hash: string }
 }
 
 export const handleLogOutOfXumm = async () => {
-  await xumm.logout()
+  try {
+    await xumm.logout()
+  } catch (error) {
+    console.error('Error during Xumm logout:', error)
+    // Potentially re-throw or handle more gracefully if needed,
+    // but for now, we'll just log it to prevent an uncaught error.
+  }
 }

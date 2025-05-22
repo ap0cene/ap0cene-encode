@@ -263,7 +263,6 @@ const physicalProductFormSchema = [
           'Bags',
           'Shoes',
           'Jewelry',
-          'Accessories',
         ],
         formState.type,
       )
