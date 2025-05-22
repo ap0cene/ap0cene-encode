@@ -19,6 +19,8 @@ export const signTransactionUsingXummWallet = async (txJSON: Record<string, any>
     throw new Error('No SDK instance found')
   }
 
+  const returnUrl = `${window.location.origin}/success/{txid}`
+
   // Create the sign request AND subscribe to events in one go
   const { created, resolved } = await sdk.payload.createAndSubscribe(
     {
@@ -26,7 +28,10 @@ export const signTransactionUsingXummWallet = async (txJSON: Record<string, any>
       options: {
         submit: true, // auto-submit after signing
         expire: 300, // 5 min
-        return_url: { web: window.location.origin },
+        return_url: {
+          app: returnUrl, // identical app + web  → only the opener redirects
+          web: returnUrl,
+        },
       },
       custom_meta: { instruction: 'Please sign the transaction' },
     },
@@ -66,16 +71,21 @@ export const signTransactionUsingXummWallet = async (txJSON: Record<string, any>
   )
 
   // Show the QR / deep-link (opens Xumm on desktop & mobile)
-  window.open(created.next.always, '_blank')
-
+  window.location.assign(created.next.always)
+  // window.location.assign(created.next.always)
   // The `resolved` promise will be of type `unknown` if not explicitly typed by the SDK based on the callback.
   // We expect `{ hash: string }` upon successful resolution.
   const result = (await resolved) as { hash: string }
-  debugger
   // Wait until the callback above resolves (with hash) or throws an error.
   return result // result is now cast to { hash: string }
 }
 
 export const handleLogOutOfXumm = async () => {
-  await xumm.logout()
+  try {
+    await xumm.logout()
+  } catch (error) {
+    console.error('Error during Xumm logout:', error)
+    // Potentially re-throw or handle more gracefully if needed,
+    // but for now, we'll just log it to prevent an uncaught error.
+  }
 }
