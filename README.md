@@ -4,7 +4,7 @@
 
 This is a React-based frontend application for Ap0cene Authentication, built with TypeScript.
 
-## 🧬 NFC to NFT Data Flow
+## 🔐 Phygital Authentication Flow: Product Registration &Consumer Verification
 
 ```mermaid
 flowchart TD
@@ -32,13 +32,16 @@ flowchart TD
     ShowWallets --> ConnectWallet["User Connects Wallet"]
     ConnectWallet --> CheckAuth{Wallet Address<br/>Authorized?}
 
-    CheckAuth -- No --> AuthError["Display Authorization Error<br/>'Contact phygital@ap0cene.com'"]
-    CheckAuth -- Yes --> FillMetadata["Fill Product Metadata Form<br/>(includes chip public key)"]
+    CheckAuth -- No --> AuthError["Display Authorization Error"]
+    CheckAuth -- Yes --> FillMetadata["Fill Product Metadata Form"]
 
-    FillMetadata --> UploadIPFS["Upload Metadata to IPFS<br/>via Pinata"]
+    FillMetadata --> UploadIPFS["Upload Metadata + <br> Chip Public Key to IPFS"]
     UploadIPFS --> CreateURI["Generate NFT URI:<br/>ipfs://[hash]:[chipPublicKey]"]
     CreateURI --> MintNFT["Mint NFT on XRPL<br/>with Taxon & URI"]
     MintNFT --> Success["Display Success<br/>Transaction Hash"]
+
+    %% Complete the loop - after registration, user can scan again
+    Success -.->|"Scan chip again"| Start
 
     %% Styling
     classDef scan fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
