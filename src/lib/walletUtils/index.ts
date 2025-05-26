@@ -1,7 +1,7 @@
 import sdk from '@crossmarkio/sdk'
 import { connectToXumm, handleLogOutOfXumm, signTransactionUsingXummWallet } from './xaman'
 import { connectToCrossmark, signTransactionUsingCrossmark } from './crossmark'
-import { getAddressUsingGemWallet, signTransactionUsingGemWallet } from './gem'
+import { getAddressUsingGemWallet, submitTransactionUsingGemWallet } from './gem'
 
 export const handleLogout = async (walletType: string) => {
   // Handle wallet-specific logout operations
@@ -92,7 +92,7 @@ export const signTransaction = async (walletType: string, transaction: any) => {
         return await signTransactionUsingCrossmark(transaction)
 
       case 'gemwallet':
-        return await signTransactionUsingGemWallet(transaction)
+        return await submitTransactionUsingGemWallet(transaction)
 
       default:
         throw new Error(`Unsupported wallet type: ${walletType}`)

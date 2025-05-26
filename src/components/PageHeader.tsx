@@ -73,7 +73,7 @@ function PageHeader() {
     <Header border="bottom" pad="medium" justify="between">
       <LeftHeaderBox direction="row" alignContent="center">
         <HeaderText size="xlarge" textAlign="center" onClick={() => navigate('/')}>
-          Ap0cene XRPL phygital NFT
+          Ap0cene Verification
         </HeaderText>
       </LeftHeaderBox>
 

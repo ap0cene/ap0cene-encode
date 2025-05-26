@@ -20,7 +20,7 @@ export function pkToTaxon(pkHex: string): number {
 
   // Grab the last 8 hex chars → parse as base-16
   // eslint-disable-next-line no-bitwise
-  return parseInt(hashedKey.slice(-8), 16) >>> 0 // ">>> 0" forces Uint32
+  return parseInt(hashedKey.slice(0, 8), 16) >>> 0 // ">>> 0" forces Uint32
 }
 
 export async function mintToken(ipfsHash: string, chipPublicKey: string, walletType: string) {

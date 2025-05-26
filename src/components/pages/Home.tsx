@@ -131,10 +131,13 @@ function Home() {
   const rndParam = searchParams.get('rnd')
   const rndsigParam = searchParams.get('rndsig')
 
-  const { authorities, setVerifiedChipPublicKey, verifiedChipPublicKey } = useContext(GlobalStateContext)
+  const { authorities, setVerifiedChipPublicKey, verifiedChipPublicKey, address, walletType } =
+    useContext(GlobalStateContext)
   const [isLoadingNFT, setIsLoadingNFT] = useState(false)
   const [nftData, setNftData] = useState<NFTLookupResult>(null)
   const [verificationError, setVerificationError] = useState<string | null>(null)
+  const [hasNavigatedToProduct, setHasNavigatedToProduct] = useState(false)
+  const [hasCompletedNFTLookup, setHasCompletedNFTLookup] = useState(false)
 
   useEffect(() => {
     if (pk2Param && rndParam && rndsigParam) {
@@ -165,6 +168,7 @@ function Home() {
     if (verifiedChipPublicKey) {
       setIsLoadingNFT(true)
       setNftData(null)
+      setHasCompletedNFTLookup(false)
 
       try {
         const lookupNFT = async () => {
@@ -182,6 +186,7 @@ function Home() {
             setVerificationError('Error looking up NFT after chip verification.')
           } finally {
             setIsLoadingNFT(false)
+            setHasCompletedNFTLookup(true)
           }
         }
         lookupNFT()
@@ -189,9 +194,41 @@ function Home() {
         console.log('Error looking up NFT:', error)
         setIsLoadingNFT(false)
         setNftData(null)
+        setHasCompletedNFTLookup(true)
       }
     }
   }, [verifiedChipPublicKey, authorities])
+
+  // Add effect to check if wallet is already connected and authorized after chip verification
+  useEffect(() => {
+    // Check if chip is verified, NFT lookup has completed, no NFT exists, wallet is connected, and we haven't already navigated
+    if (
+      verifiedChipPublicKey &&
+      hasCompletedNFTLookup &&
+      !nftData &&
+      address &&
+      walletType &&
+      !hasNavigatedToProduct &&
+      !verificationError
+    ) {
+      // Verify the connected wallet is authorized
+      if (authorities[address]) {
+        console.log('Wallet already connected and authorized, navigating to product page')
+        setHasNavigatedToProduct(true)
+        navigate('/product')
+      }
+    }
+  }, [
+    verifiedChipPublicKey,
+    hasCompletedNFTLookup,
+    nftData,
+    address,
+    walletType,
+    authorities,
+    navigate,
+    hasNavigatedToProduct,
+    verificationError,
+  ])
 
   const renderContent = () => {
     console.log('isLoadingNFT', isLoadingNFT)
@@ -244,12 +281,7 @@ function Home() {
     )
   }
 
-  return (
-    <Box>
-      <Heading level={3}>Ap0cene Phygital NFT Encoding</Heading>
-      <Box>{renderContent()}</Box>
-    </Box>
-  )
+  return <Box>{renderContent()}</Box>
 }
 
 export default Home
