@@ -1,4 +1,4 @@
-# Ap0cene Encode Frontend
+# Ap0cene Phygital NFTs
 
 > **Phygital Authentication Platform** - Bridging the gap between physical products and digital ownership through NFC-enabled blockchain authentication.
 
@@ -126,7 +126,3 @@ yarn deploy
 
 - 🌐 **Platform**: [apocene.co](https://apocene.co/)
 - 🎥 **How-to Video**: [Watch the tutorial](https://www.youtube.com/watch?v=58755dOkFrA)
-
----
-
-_Transforming fashion through phygital innovation - where every product tells its authentic story._
