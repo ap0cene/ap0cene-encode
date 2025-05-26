@@ -179,9 +179,7 @@ function ImagesField({
           const fileList = event?.target?.files
           const uploadURLs = await Promise.all(
             Object.values(fileList).map(async (file: any) => {
-              debugger
               const ipfsHash = await uploadFileToIPFS(file)
-              debugger
               return makeIPFSURLFromHash(ipfsHash)
             }),
           )

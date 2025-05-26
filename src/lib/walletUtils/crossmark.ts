@@ -16,7 +16,6 @@ export const connectToCrossmark = async () => {
 export const signTransactionUsingCrossmark = async (txJSON: Record<string, any>) => {
   // txJSON should already have URI hex‑encoded, flags, etc.
   const res = await sdk.methods.signAndSubmitAndWait(txJSON)
-  debugger
   // According to Crossmark SDK examples, the hash is found at res.response.data.resp.result.hash
   const { data } = res.response
 

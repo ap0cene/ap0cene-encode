@@ -59,7 +59,6 @@ export async function mintToken(ipfsHash: string, chipPublicKey: string, walletT
   let result
   try {
     result = await signTransaction(walletType, transactionJson)
-    debugger
     if (!result) {
       throw new Error('Transaction was cancelled by user')
     }
@@ -68,7 +67,6 @@ export async function mintToken(ipfsHash: string, chipPublicKey: string, walletT
     console.error('Error signing NFT transaction:', error)
     throw error
   }
-  debugger
   let tx
   try {
     // Wait for the transaction to be confirmed
@@ -81,7 +79,6 @@ export async function mintToken(ipfsHash: string, chipPublicKey: string, walletT
     console.error('Error confirming NFT transaction:', error)
     throw error
   }
-  debugger
   client.disconnect()
   return tx.result
 }
