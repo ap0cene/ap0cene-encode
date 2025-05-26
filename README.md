@@ -1,10 +1,18 @@
-# Ap0cene Authentication Frontend
+# Ap0cene Encode Frontend
 
-## Overview
+> **Phygital Authentication Platform** - Bridging the gap between physical products and digital ownership through NFC-enabled blockchain authentication.
 
-This is a React-based frontend application for Ap0cene Authentication, built with TypeScript.
+## What is Ap0cene?
 
-## 🔐 Phygital Authentication Flow: Product Registration &Consumer Verification
+[Ap0cene](https://apocene.co/) is revolutionizing fashion and product authentication by combining **encrypted NFC chips** with **XRPL blockchain technology**. This frontend application powers the encoding platform where brands and creators can:
+
+- **Register products** by minting NFTs linked to NFC chips
+- **Verify authenticity** when consumers scan products
+- **Create phygital experiences** that blend physical and digital ownership
+
+Whether you're a luxury brand or an independent creator, our platform makes blockchain-based product authentication accessible to everyone—no coding required, just a smartphone.
+
+## 🔐 How It Works: Authentication Flow
 
 ```mermaid
 flowchart TD
@@ -61,99 +69,50 @@ flowchart TD
     class Success success;
 ```
 
+## Core Features
+
+- **🔗 Multi-Wallet Integration**: Seamless connection with Crossmark, Gem Wallet, and Xaman
+- **📱 NFC Chip Authentication**: Cryptographic verification of product authenticity
+- **🌐 XRPL Blockchain**: Decentralized NFT minting and verification on XRP Ledger
+- **📄 IPFS Metadata Storage**: Distributed storage for product information and media
+- **✨ No-Code Experience**: Intuitive interface for creators without technical expertise
+
 ## Tech Stack
 
-- React 18.2.0
-- TypeScript 4.4.2
-- Grommet UI Framework 2.25.0
-- XRPL SDK 2.8.1
-- React Router DOM 6.14.0
-- React Hook Form 7.48.2
-- Yup for form validation
+Built with modern web technologies for reliability and performance:
 
-## Key Dependencies
+- **Frontend**: React 18 + TypeScript
+- **UI Framework**: Grommet with custom theming
+- **Blockchain**: XRPL SDK for NFT operations
+- **Wallets**: Crossmark, Gem Wallet, Xaman integrations
+- **Forms**: Custom form library
+- **Storage**: IPFS for decentralized metadata
 
-- **Wallet Integration**:
-  - @crossmarkio/sdk
-  - @gemwallet/api
-  - xumm
-  - xrpl
-- **UI Components**:
-  - grommet
-  - grommet-icons
-  - grommet-theme-hpe
-  - styled-components
-- **Form Handling**:
-  - react-hook-form
-  - @hookform/resolvers
-  - yup
-- **HTTP Client**:
-  - axios
-- **Development Tools**:
-  - react-app-rewired
-  - eslint
-  - prettier
-  - typescript
-
-## Application Structure
+## Project Structure
 
 ```
 src/
 ├── components/
-│   ├── autoform/      # Form components
-│   ├── forms/         # Form-related components
-│   ├── home/          # Home page components
-│   ├── NavBody.tsx    # Main navigation component
-│   └── PageHeader.tsx # Page header component
+│   ├── autoform/      # Dynamic form components
+│   ├── forms/         # Product registration forms
+│   ├── home/          # Landing and verification pages
+│   └── NavBody.tsx    # Main navigation
 ├── walletUtils/       # Wallet integration utilities
-│   ├── crossmark.ts   # Crossmark wallet integration
-│   ├── gem.ts         # Gem wallet integration
-│   ├── index.ts       # Main wallet utilities
-│   └── xaman.ts       # Xaman wallet integration
-├── types/             # TypeScript type definitions
-├── state/             # State management
-├── lib/               # Utility libraries
-├── App.tsx            # Main application component
-└── index.tsx          # Application entry point
+│   ├── crossmark.ts   # Crossmark wallet
+│   ├── gem.ts         # Gem wallet
+│   └── xaman.ts       # Xaman wallet
+├── types/             # TypeScript definitions
+├── state/             # Application state management
+└── lib/               # Utility functions
 ```
 
-## Key Features
-
-1. **Multi-Wallet Support**:
-
-   - Integration with Crossmark
-   - Integration with Gem Wallet
-   - Integration with Xaman
-   - XRPL functionality
-
-2. **UI Framework**:
-
-   - Uses Grommet UI framework
-   - Custom theme based on HPE theme
-   - Responsive design
-
-3. **Form Handling**:
-
-   - Advanced form validation with Yup
-   - React Hook Form integration
-   - Autoform components for dynamic forms
-
-4. **Navigation**:
-   - React Router DOM for routing
-   - Main navigation through NavBody component
-   - Page header with consistent layout
-
-## Development
-
-- Development server runs on port 3001
-- Uses react-app-rewired for configuration
-- Includes ESLint and Prettier for code quality
-- TypeScript for type safety
-
-## Build and Deployment
+## Getting Started
 
 ```bash
-# Start development server
+# Install dependencies
+yarn install
+
+# Start development server (runs on port 3001)
 yarn start
 
 # Build for production
@@ -163,19 +122,11 @@ yarn build
 yarn deploy
 ```
 
-## Environment
+## Learn More
 
-- Node.js environment
-- Browser-based crypto operations
-- Firebase hosting for deployment
+- 🌐 **Platform**: [apocene.co](https://apocene.co/)
+- 🎥 **How-to Video**: [Watch the tutorial](https://www.youtube.com/watch?v=58755dOkFrA)
 
-## Security Considerations
+---
 
-- Browser-based crypto operations
-- Wallet integration security
-- Form validation and sanitization
-- Secure API communication
-
-## Future Reference
-
-This documentation serves as a quick reference for understanding the application's structure, dependencies, and key features. For detailed implementation, refer to the specific component files and their documentation.
+_Transforming fashion through phygital innovation - where every product tells its authentic story._
