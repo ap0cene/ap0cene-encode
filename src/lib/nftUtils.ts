@@ -16,7 +16,7 @@ export function pkToTaxon(pkHex: string): number {
     throw new Error('pkToTaxon expects a hex string ≥ 8 chars')
   }
 
-  const hashedKey = shajs('sha256').update(pkHex).digest('hex')
+  const hashedKey = shajs('sha1').update(pkHex).digest('hex')
 
   // Grab the last 8 hex chars → parse as base-16
   // eslint-disable-next-line no-bitwise

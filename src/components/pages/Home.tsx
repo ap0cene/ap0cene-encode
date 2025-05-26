@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { GoogleWallet, Diamond, CloudDownload, StatusCritical } from 'grommet-icons'
 import { isInstalled, getAddress } from '@gemwallet/api'
 import styled from 'styled-components'
+import { isMobile } from 'react-device-detect'
 import { GlobalStateContext } from '../../state/GlobalStateContext'
 import { ProductMetadata } from '../../types/productTypes'
 import { XrplNft } from '../../types/xrplTypes'
@@ -80,6 +81,31 @@ function WalletConnectBox() {
     navigate('/product')
   }
 
+  // Define button components
+  const gemButton = (
+    <Button onClick={handleGemLogin} icon={<Diamond />} label="Gem" margin={{ bottom: 'small' }} primary />
+  )
+
+  const xamanButton = (
+    <Button
+      onClick={handleXamanLogin}
+      icon={<Image src={xamanIcon} alt="Xanum" width="24px" style={{ borderRadius: '5px' }} />}
+      label="Xaman"
+      margin={{ bottom: 'small' }}
+      primary
+    />
+  )
+
+  const crossmarkButton = (
+    <Button
+      onClick={handleCrossmarkConnection}
+      icon={<Image src={crossmarkIcon} alt="Xanum" width="24px" style={{ borderRadius: '5px' }} />}
+      label="Crossmark"
+      margin={{ bottom: 'small' }}
+      primary
+    />
+  )
+
   return (
     <Box fill align="center" justify="center" pad="large" background="light-2" margin={{ vertical: 'medium' }}>
       <Box
@@ -94,21 +120,17 @@ function WalletConnectBox() {
           Please connect a wallet to continue
         </Text>
 
-        <Button onClick={handleGemLogin} icon={<Diamond />} label="Gem" margin={{ bottom: 'small' }} primary />
-        <Button
-          onClick={handleXamanLogin}
-          icon={<Image src={xamanIcon} alt="Xanum" width="24px" style={{ borderRadius: '5px' }} />}
-          label="Xaman"
-          margin={{ bottom: 'small' }}
-          primary
-        />
-        <Button
-          onClick={handleCrossmarkConnection}
-          icon={<Image src={crossmarkIcon} alt="Xanum" width="24px" style={{ borderRadius: '5px' }} />}
-          label="Crossmark"
-          margin={{ bottom: 'small' }}
-          primary
-        />
+        {isMobile ? (
+          // On mobile, only show Xaman wallet
+          xamanButton
+        ) : (
+          // On desktop, show all wallets
+          <>
+            {gemButton}
+            {xamanButton}
+            {crossmarkButton}
+          </>
+        )}
 
         {error && (
           <Box margin={{ top: 'medium' }} pad="small" background="status-critical" round="small" align="center">
