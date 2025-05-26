@@ -63,7 +63,6 @@ export const getAccount = async (walletType: string): Promise<string | null> => 
 
       case 'gemwallet':
         address = await getAddressUsingGemWallet()
-        console.log('address', address)
         return address || null
 
       default:

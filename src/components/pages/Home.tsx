@@ -253,7 +253,6 @@ function Home() {
   ])
 
   const renderContent = () => {
-    console.log('isLoadingNFT', isLoadingNFT)
     if (isLoadingNFT) {
       return (
         <Box align="center" pad="large">

@@ -75,7 +75,6 @@ export function GlobalStateProvider({ children }: GlobalStateProviderProps) {
 
   // Setter for verifiedChipPublicKey (in-memory only)
   const setVerifiedChipPublicKey = (key: string | null) => {
-    console.log('Setting verified chip public key:', key)
     setVerifiedChipPublicKeyState(key)
   }
 

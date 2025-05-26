@@ -6,7 +6,6 @@ import { convertStringToHex } from 'xrpl'
 export const connectToCrossmark = async () => {
   const res = await sdk.methods.signInAndWait()
   if (res.response.data) {
-    console.log(res.response.data)
     return res.response.data.address
   }
 }
