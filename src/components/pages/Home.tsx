@@ -294,10 +294,43 @@ function Home() {
 
     return (
       <Box background="light-2" pad="large" round="small" margin={{ top: 'medium' }}>
-        <Text size="large">
+        <Text size="large" margin={{ bottom: 'medium' }}>
           This page should be opened by scanning an ap0cene NFC authentication chip. Before you can begin this process,
           you will need to have ap0cene Phygital NFT chips on hand to encode, if you have not acquired them yet, you can{' '}
-          <Anchor href="https://ap0cene.co/store" target="_blank" label="Purchase Them Here" />.
+          <Anchor href="https://apocene.co/store" target="_blank" label="Purchase Them Here" />.
+        </Text>
+
+        <Box margin={{ vertical: 'medium' }}>
+          <Text size="medium" weight="bold" margin={{ bottom: 'small' }}>
+            To understand how this works, please watch this video:
+          </Text>
+          <Box
+            height="medium"
+            width="100%"
+            margin={{ bottom: 'medium' }}
+            style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden' }}
+          >
+            <iframe
+              src="https://www.youtube.com/embed/58755dOkFrA"
+              title="ap0cene Authentication Demo"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                borderRadius: '8px',
+              }}
+            />
+          </Box>
+        </Box>
+
+        <Text size="large" margin={{ top: 'small' }}>
+          For more information about our protocol, please visit{' '}
+          <Anchor href="https://apocene.co" target="_blank" label="apocene.co" />.
         </Text>
       </Box>
     )
