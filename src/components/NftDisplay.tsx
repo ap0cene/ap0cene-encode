@@ -6,7 +6,7 @@ import { XrplNft } from '../types/xrplTypes'
 import { ProductMetadata } from '../types/productTypes'
 import { GlobalStateContext } from '../state/GlobalStateContext'
 import { productFormSchema } from './forms/constants'
-import { verifyHaloChipSignature, HaloQueryParams } from '../utils/haloVerification'
+import { verifyHaloChipSignature, HaloQueryParams } from '../lib/haloVerification'
 
 // Define type for NFT data based on Home.tsx
 type NFTLookupResult = {
