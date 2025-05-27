@@ -37,20 +37,8 @@ export type Product = {
   shoesSubtype: ShoesSubtype[]
   jewlerySubtype: JewelrySubtype[]
   suitSetSubtype: SuitSetSubtype[]
-  // vibe: string
   copy: string
   itemWeight: number
-  // color: Color
-  // customColor?: string
-  // depth?: number
-  // width?: number
-  // inseam?: number
-  // height?: number
-  // sleeve?: number
-  // chest?: number
-  // shoulder?: number
-  // length?: number
-  // price: number
 }
 
 export type Variant = {

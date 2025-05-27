@@ -95,15 +95,32 @@ src/
 ├── components/
 │   ├── autoform/      # Dynamic form components
 │   ├── forms/         # Product registration forms
-│   ├── home/          # Landing and verification pages
-│   └── NavBody.tsx    # Main navigation
-├── walletUtils/       # Wallet integration utilities
-│   ├── crossmark.ts   # Crossmark wallet
-│   ├── gem.ts         # Gem wallet
-│   └── xaman.ts       # Xaman wallet
+│   ├── pages/         # Landing and verification pages
+│   ├── utility/       # Utility components (Modal, ErrorBanner)
+│   ├── NavBody.tsx    # Main navigation
+│   ├── PageHeader.tsx # Page header component
+│   └── NftDisplay.tsx # NFT display component
+├── lib/               # Utility functions
+│   ├── walletUtils/   # Wallet integration utilities
+│   │   ├── crossmark.ts   # Crossmark wallet
+│   │   ├── gem.ts         # Gem wallet
+│   │   ├── xaman.ts       # Xaman wallet
+│   │   └── index.ts       # Wallet utilities index
+│   ├── nftUtils.ts    # NFT-related utilities
+│   └── pinata.ts      # IPFS/Pinata utilities
+│   └── haloVerification.ts
 ├── types/             # TypeScript definitions
+│   ├── productTypes.ts    # Product-related types
+│   ├── productEnums.ts    # Product enumerations
+│   └── xrplTypes.ts       # XRPL-related types
 ├── state/             # Application state management
-└── lib/               # Utility functions
+│   └── GlobalStateContext.tsx
+├── assets/            # Static assets (images, icons)
+│   ├── crossmark.png
+│   └── xaman.png
+├── App.tsx            # Main application component
+├── constants.ts       # Application constants
+└── index.tsx          # Application entry point
 ```
 
 ## Getting Started
