@@ -15,8 +15,8 @@ import crossmarkIcon from '../../assets/crossmark.png'
 import { connectToXumm, handleLogOutOfXumm } from '../../lib/walletUtils/xaman'
 import { connectToCrossmark } from '../../lib/walletUtils/crossmark'
 import { lookupAuthenticatedNFT } from '../../lib/nftUtils'
-import NftDisplay from '../NftDisplay'
-import { verifyHaloChipSignature, HaloQueryParams } from '../../utils/haloVerification'
+import NftDisplay from '../display/NftDisplay'
+import { verifyHaloChipSignature, HaloQueryParams } from '../../lib/haloVerification'
 
 // Define type for NFT data
 type NFTLookupResult = {

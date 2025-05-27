@@ -2,11 +2,11 @@ import React, { useContext, useMemo, useState } from 'react'
 import { Box, Heading, Text, Image, ResponsiveContext, Anchor, Grid, Card, CardHeader, CardBody } from 'grommet'
 import { StatusGood, StatusCritical, StatusUnknown, StatusWarning, StatusInfo } from 'grommet-icons'
 import _ from 'lodash'
-import { XrplNft } from '../types/xrplTypes'
-import { ProductMetadata } from '../types/productTypes'
-import { GlobalStateContext } from '../state/GlobalStateContext'
-import { productFormSchema } from './forms/constants'
-import { verifyHaloChipSignature, HaloQueryParams } from '../lib/haloVerification'
+import { XrplNft } from '../../types/xrplTypes'
+import { ProductMetadata } from '../../types/productTypes'
+import { GlobalStateContext } from '../../state/GlobalStateContext'
+import { productFormSchema } from '../forms/constants'
+import { verifyHaloChipSignature, HaloQueryParams } from '../../lib/haloVerification'
 
 // Define type for NFT data based on Home.tsx
 type NFTLookupResult = {
