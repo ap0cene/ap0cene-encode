@@ -126,7 +126,8 @@ function WalletConnectBox() {
         ) : (
           // On desktop, show all wallets
           <>
-            {gemButton}
+            {/* Gem wallet is no longer maintained, deprecating on advice from XRPL grants evaluation team */}
+            {/* {gemButton} */}
             {xamanButton}
             {crossmarkButton}
           </>
